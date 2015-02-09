@@ -22,6 +22,7 @@ import autonavi.online.framework.configcenter.exception.AofException;
 import autonavi.online.framework.configcenter.exception.AofExceptionEnum;
 import autonavi.online.framework.configcenter.service.ZookeeperService;
 import autonavi.online.framework.configcenter.util.AofCcProps;
+import autonavi.online.framework.configcenter.util.ZooKeeperClientHolder;
 import autonavi.online.framework.zookeeper.SysProps;
 
 @Controller
@@ -41,7 +42,7 @@ public class ConfigCenterController {
 		ResultEntity entity=new ResultEntity();
 		Map<String,Object> prop=new HashMap<String,Object>();
 		try {
-			ZooKeeper zk=zookeeperService.loginAppRoot(appName, password);
+			ZooKeeper zk=zookeeperService.loginAppRoot(appName, password,res.getSession().getId(),isDev);
 			entity.setCode("0");
 			entity.setMsg("success");
 			res.getSession().setAttribute(AofCcProps.SESSION_APP, appName);
@@ -56,8 +57,6 @@ public class ConfigCenterController {
 					logger.error(e.getMessage(),e);
 				}
 			}else{
-				res.getSession().setAttribute(AofCcProps.SESSION_ZK, zk);
-				res.getSession().setAttribute(AofCcProps.SESSION_PASS, password);
 				res.getSession().setAttribute(AofCcProps.SESSION_FLAG_RUN, true);
 			}
 			
@@ -111,7 +110,7 @@ public class ConfigCenterController {
 			return l1;
 		}
 		try {
-			ZooKeeper zk=(ZooKeeper)res.getSession().getAttribute(AofCcProps.SESSION_ZK);
+			ZooKeeper zk=ZooKeeperClientHolder.getZooKeeper(app);
 			
 			List<String> l=zookeeperService.getAppNodeTree(root, zk);
 			for(String s:l){

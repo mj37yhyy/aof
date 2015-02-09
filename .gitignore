@@ -52,3 +52,11 @@ $RECYCLE.BIN/
 *.msp
 *.svn-base
 aof-configcenter/.settings/org.eclipse.core.resources.prefs
+*.project
+*.classpath
+*.prefs
+*.jsdtscope
+*.component
+*.container
+*.name
+*.lst

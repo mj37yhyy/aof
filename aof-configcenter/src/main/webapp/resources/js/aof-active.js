@@ -144,6 +144,9 @@ function bindButtonEventSelectNode(){
 				     }else{
 				    	 alert(msg.msg);
 				     }
+				   },
+				   error:function(){
+					   location.href="session_timeout.jsp";
 				   }
 			});
 		}else if(optype=="biz"){

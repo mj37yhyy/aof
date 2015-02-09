@@ -28,8 +28,11 @@ function save(){
 			     if(msg.code==0){
 			    	 window.parent.$("#main").attr("src","index_run.jsp");
 			     }else{
-			    	
+			    	 alert(msg.msg);
 			     }
+			   },
+			   error:function(){
+				   location.href="session_timeout.jsp";
 			   }
 		});
 	}
@@ -57,6 +60,9 @@ $(document).ready(function(){
 		     }else{
 		    	
 		     }
+		   },
+		   error:function(){
+			   location.href="session_timeout.jsp";
 		   }
 	});
 

@@ -29,6 +29,9 @@ function save(btn,fileName){
 		     }else{
 		    	 btn.siblings("button").trigger("click");
 		     }
+		   },
+		   error:function(){
+			   location.href="session_timeout.jsp";
 		   }
 	});
 }
@@ -50,6 +53,9 @@ function checkFile(fileName,btn){
 		    	alert(msg.msg);
 		    	btn.siblings("button").trigger("click");
 		     }
+		   },
+		   error:function(){
+			   location.href="session_timeout.jsp";
 		   }
 	});
 	
@@ -70,6 +76,9 @@ $(document).ready(function(){
 		     }else{
 		    	
 		     }
+		   },
+		   error:function(){
+			   location.href="session_timeout.jsp";
 		   }
 	});
 	<%}else{%>
@@ -86,6 +95,9 @@ $(document).ready(function(){
 		     }else{
 		    	
 		     }
+		   },
+		   error:function(){
+			   location.href="session_timeout.jsp";
 		   }
 	});
 	<%}%>

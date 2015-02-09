@@ -10,4 +10,5 @@ public class AofCcProps {
 	public final static String FILENAME_BIZ="SESSION_FILENAME_BIZ";
 	public final static String JSON_PATH="/resources/json";
 
+
 }

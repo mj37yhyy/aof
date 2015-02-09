@@ -91,9 +91,6 @@
 		</repository>
 	</distributionManagement>
 	<build>
-		<!-- <resources> <resource> <directory>src/main/java</directory> <excludes> 
-			<exclude>*.java</exclude> </excludes> <includes> <include>META-INF/**</include> 
-			</includes> </resource> </resources> -->
 		<!-- 以下为了解决报错：maven-dependency-plugin (goals "copy-dependencies","unpack") 
 			is not supported by m2e -->
 		<pluginManagement>
@@ -143,32 +140,6 @@
 					<skip>true</skip>
 				</configuration>
 			</plugin>
-			<!-- <plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-jar-plugin</artifactId> 
-				<configuration> <archive> <manifest> <addClasspath>true</addClasspath> <classpathPrefix>lib/</classpathPrefix> 
-				</manifest> </archive> </configuration> </plugin> -->
-			<!-- <plugin> <groupId>com.thoughtworks.paranamer</groupId> <artifactId>paranamer-maven-plugin</artifactId> 
-				<executions> <execution> <id>run</id> <configuration> <sourceDirectory>${project.build.sourceDirectory}</sourceDirectory> 
-				<outputDirectory>${project.build.outputDirectory}</outputDirectory> </configuration> 
-				<goals> <goal>generate</goal> </goals> </execution> </executions> </plugin> -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-antrun-plugin</artifactId>
-				<version>1.7</version>
-				<!-- <executions> -->
-				<!-- <execution> -->
-				<!-- <phase>compile</phase> -->
-				<!-- <configuration> -->
-				<!-- <tasks> -->
-				<!-- <replaceregexp file="src/main/resources/META-INF/version.txt" -->
-				<!-- match=".*" replace="${project.version}" byline="true" /> -->
-				<!-- </tasks> -->
-				<!-- </configuration> -->
-				<!-- <goals> -->
-				<!-- <goal>run</goal> -->
-				<!-- </goals> -->
-				<!-- </execution> -->
-				<!-- </executions> -->
-			</plugin>
 			<plugin>
 				<artifactId>maven-source-plugin</artifactId>
 				<version>2.1</version>
@@ -184,16 +155,6 @@
 					</execution>
 				</executions>
 			</plugin>
-			<!-- <plugin> <groupId>com.idfconnect.devtools</groupId> <artifactId>idfc-proguard-maven-plugin</artifactId> 
-				<version>1.0.1</version> <executions> <execution> <phase>package</phase> 
-				<goals> <goal>obfuscate</goal> </goals> </execution> </executions> <configuration> 
-				<inputFile>${project.build.outputDirectory}</inputFile> <libraryJarPaths> 
-				<libraryJarPath>${java.home}/lib/jce.jar</libraryJarPath> </libraryJarPaths> 
-				<excludeManifests>false</excludeManifests> <excludeMavenDescriptor>false</excludeMavenDescriptor> 
-				<outputArtifacts> <outputArtifact> <file>${project.build.finalName}.${project.packaging}</file> 
-				</outputArtifact> </outputArtifacts> </configuration> <dependencies> <dependency> 
-				<groupId>net.sf.proguard</groupId> <artifactId>proguard-base</artifactId> 
-				<version>5.0</version> </dependency> </dependencies> </plugin> -->
 		</plugins>
 	</build>
 </project>

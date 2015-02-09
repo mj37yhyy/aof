@@ -23,7 +23,7 @@ public interface ZookeeperService {
 	 * @param appRoot
 	 * @param passwd
 	 */
-	public ZooKeeper loginAppRoot(String appRoot,String passwd);
+	public ZooKeeper loginAppRoot(String appRoot,String passwd,String sessionId,Boolean isDev);
 	/**
 	 * 获取节点状态
 	 * @param path
@@ -266,5 +266,12 @@ public interface ZookeeperService {
 	 * @param password
 	 */
 	public void notifyDssMonitor(ZooKeeper zk,String appName, String password);
+	/**
+	 * 检测是否有在线的应用
+	 * @param zk
+	 * @param app
+	 * @return
+	 */
+	public boolean hasActiveApp(ZooKeeper zk,String app);
 
 }

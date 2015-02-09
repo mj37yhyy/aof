@@ -58,6 +58,9 @@ function deletes(name){
 			     }else{
 			    	
 			     }
+			   },
+			   error:function(){
+				   location.href="session_timeout.jsp";
 			   }
 		});
 	}
@@ -113,6 +116,9 @@ function init(){
 		     }else{
 		    	
 		     }
+		   },
+		   error:function(){
+			   location.href="session_timeout.jsp";
 		   }
 	});
 }

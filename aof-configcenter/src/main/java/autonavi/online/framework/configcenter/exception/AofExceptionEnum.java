@@ -12,6 +12,7 @@ public enum AofExceptionEnum
   APPROOT_LOGIN_ERROR("202", "应用程序权限校验失败"),
   APPROOT_IS_NOT_EXIST("203", "应用程序配置信息不存在"),
   APPROOT_XML_ERROR("204", "初始化XML文件错误"),
+  APPROOT_HAS_LOGIN("205", "应用已经登录"),
   
   MVC_TREE_ROOT_IS_INVALID("301", "根节点无法解析"),
   MVC_TREE_ROOT_IS_NULL("302", "根节点为空"),

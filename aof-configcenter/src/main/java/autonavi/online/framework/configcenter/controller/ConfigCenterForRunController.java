@@ -34,6 +34,7 @@ import autonavi.online.framework.configcenter.entity.ResultEntity;
 import autonavi.online.framework.configcenter.exception.AofException;
 import autonavi.online.framework.configcenter.service.ZookeeperService;
 import autonavi.online.framework.configcenter.util.AofCcProps;
+import autonavi.online.framework.configcenter.util.ZooKeeperClientHolder;
 import autonavi.online.framework.util.json.JsonBinder;
 import autonavi.online.framework.zookeeper.SysProps;
 
@@ -55,7 +56,7 @@ public class ConfigCenterForRunController {
 	@RequestMapping("/manager/index_run")
 	public @ResponseBody Object initIndexRun(HttpServletRequest res){
 		String app=(String)res.getSession().getAttribute(AofCcProps.SESSION_APP);
-		ZooKeeper zk=(ZooKeeper)res.getSession().getAttribute(AofCcProps.SESSION_ZK);
+		ZooKeeper zk=ZooKeeperClientHolder.getZooKeeper(app);
 		logger.info("初始化运行模式编辑中的临时配置  应用名称["+app+"]");
 		ResultEntity entity=new ResultEntity();
 		Map<String,List<Map<String,String>>> object=new HashMap<String,List<Map<String,String>>>();
@@ -105,7 +106,7 @@ public class ConfigCenterForRunController {
 	public @ResponseBody Object baseEditRun(@RequestParam String fileName,HttpServletRequest request, HttpServletRequest response){
 		logger.info("获取base数据源列表");
 		String app=(String)request.getSession().getAttribute(AofCcProps.SESSION_APP);
-		ZooKeeper zk=(ZooKeeper)request.getSession().getAttribute(AofCcProps.SESSION_ZK);
+		ZooKeeper zk=ZooKeeperClientHolder.getZooKeeper(app);
 		ResultEntity entity = new ResultEntity();
 		try {
 			CcBaseEntity ccBase = zooKeeperService.getCcBaseEntity(zk, app, fileName);
@@ -129,7 +130,7 @@ public class ConfigCenterForRunController {
 	public @ResponseBody Object baseEditRunShard(HttpServletRequest request, HttpServletRequest response){
 		logger.info("获取Sharding数据源列表");
 		String app=(String)request.getSession().getAttribute(AofCcProps.SESSION_APP);
-		ZooKeeper zk=(ZooKeeper)request.getSession().getAttribute(AofCcProps.SESSION_ZK);
+		ZooKeeper zk=ZooKeeperClientHolder.getZooKeeper(app);
 		ResultEntity entity = new ResultEntity();
 		try {
 			CcBaseEntity ccBase = zooKeeperService.getCcShardingEntity(zk, app);
@@ -150,7 +151,7 @@ public class ConfigCenterForRunController {
 	@RequestMapping("/manager/export_dss_config")
 	public void exportDssConfig(HttpServletRequest res,HttpServletResponse response)throws Exception {
 		String app=(String)res.getSession().getAttribute(AofCcProps.SESSION_APP);
-		ZooKeeper zk=(ZooKeeper)res.getSession().getAttribute(AofCcProps.SESSION_ZK);
+		ZooKeeper zk=ZooKeeperClientHolder.getZooKeeper(app);
 		// 获取数据源配置
 		CcBaseEntity ccDss=zooKeeperService.getCcBaseEntity(zk, app, null);
 		CcBaseEntity ccShard=zooKeeperService.getCcShardingEntity(zk, app);
@@ -192,7 +193,7 @@ public class ConfigCenterForRunController {
 	@RequestMapping("/manager/export_biz_config")
 	public void exportBizConfig(HttpServletRequest res,HttpServletResponse response)throws Exception {
 		String app=(String)res.getSession().getAttribute(AofCcProps.SESSION_APP);
-		ZooKeeper zk=(ZooKeeper)res.getSession().getAttribute(AofCcProps.SESSION_ZK);
+		ZooKeeper zk=ZooKeeperClientHolder.getZooKeeper(app);
 		// 获取数据源配置
 		Map<String,Map<String,CcBizEntity>> result=new HashMap<String,Map<String,CcBizEntity>>();
 		result.putAll(zooKeeperService.getBizInfoComments(zk, app,null));
@@ -225,6 +226,7 @@ public class ConfigCenterForRunController {
 	 * @return
 	 */
 	
+	@SuppressWarnings("unchecked")
 	@RequestMapping("/manager/import_dss_config")
 	public @ResponseBody Object importDssConfig(@RequestParam String imports, HttpServletRequest res) {
 		ResultEntity entity = new ResultEntity();
@@ -237,16 +239,35 @@ public class ConfigCenterForRunController {
 			entity.setMsg("JSON格式错误");
 			return entity;
 		}
+		//校验数据格式
+		Map<String,CcDataSource> m=ccBaseEntity.getRealDataSources();
+		Map<Integer,CcDataSource> m_p=ccBaseEntity.getDataSources();
+		for(Integer i:m_p.keySet()){
+			CcDataSource cc=m_p.get(i);
+			List<String> dsList=(List<String>)cc.getProps().get(SysProps.REAl_DSS);
+			for(String dsName:dsList){
+				if(!m.containsKey(dsName)){
+					entity.setCode("1");
+					entity.setMsg("数据源名称["+dsName+"]在realDataSource中不存在");
+					return entity;
+				}
+			}
+		}
 		String app=(String)res.getSession().getAttribute(AofCcProps.SESSION_APP);
-		String pass=(String)res.getSession().getAttribute(AofCcProps.SESSION_PASS);
-		ZooKeeper zk=(ZooKeeper)res.getSession().getAttribute(AofCcProps.SESSION_ZK);
+		String pass=ZooKeeperClientHolder.getZkPass(app);
+		ZooKeeper zk=ZooKeeperClientHolder.getZooKeeper(app);
 		logger.info("导入BASE到正式配置 应用名称["+app+"]");
 		
 		try {
-			zooKeeperService.importDssConfig(ccBaseEntity, zk, app, pass);
-			entity.setCode("0");
-			entity.setMsg("success");
-			zooKeeperService.notifyDssMonitor(zk, app, pass);
+			if(!zooKeeperService.hasActiveApp(zk, app)){
+				zooKeeperService.importDssConfig(ccBaseEntity, zk, app, pass);
+				entity.setCode("0");
+				entity.setMsg("success");
+				zooKeeperService.notifyDssMonitor(zk, app, pass);
+			}else{
+				entity.setCode("1");
+				entity.setMsg("存在正在运行的应用,无法部署,请将应用下线,并等待一分钟后再试");
+			}
 		} catch (AofException e) {
 			entity.setCode(e.getErrorCode()+"");
 			entity.setMsg(e.getMessage());
@@ -275,14 +296,19 @@ public class ConfigCenterForRunController {
 			return entity;
 		}
 		String app=(String)res.getSession().getAttribute(AofCcProps.SESSION_APP);
-		String pass=(String)res.getSession().getAttribute(AofCcProps.SESSION_PASS);
-		ZooKeeper zk=(ZooKeeper)res.getSession().getAttribute(AofCcProps.SESSION_ZK);
+		String pass=ZooKeeperClientHolder.getZkPass(app);
+		ZooKeeper zk=ZooKeeperClientHolder.getZooKeeper(app);
 		logger.info("导入BIZ配置 应用名称["+app+"]");
 		
 		try {
-			zooKeeperService.importBizConfig(ccBase, zk, app, pass,null);
-			entity.setCode("0");
-			entity.setMsg("success");
+			if(!zooKeeperService.hasActiveApp(zk, app)){
+				zooKeeperService.importBizConfig(ccBase, zk, app, pass,null);
+				entity.setCode("0");
+				entity.setMsg("success");
+			}else{
+				entity.setCode("1");
+				entity.setMsg("存在正在运行的应用,无法部署,请将应用下线,并等待一分钟后再试");
+			}
 		} catch (AofException e) {
 			entity.setCode(e.getErrorCode()+"");
 			entity.setMsg(e.getMessage());
@@ -312,14 +338,19 @@ public class ConfigCenterForRunController {
 			return entity;
 		}
 		String app=(String)res.getSession().getAttribute(AofCcProps.SESSION_APP);
-		String pass=(String)res.getSession().getAttribute(AofCcProps.SESSION_PASS);
-		ZooKeeper zk=(ZooKeeper)res.getSession().getAttribute(AofCcProps.SESSION_ZK);
+		String pass=ZooKeeperClientHolder.getZkPass(app);
+		ZooKeeper zk=ZooKeeperClientHolder.getZooKeeper(app);
 		logger.info("导入BIZ配置 应用名称["+app+"]");
 		
 		try {
-			zooKeeperService.importBizConfig(ccBase, zk, app, pass,fileName);
-			entity.setCode("0");
-			entity.setMsg("success");
+			if(!zooKeeperService.hasActiveApp(zk, app)){
+				zooKeeperService.importBizConfig(ccBase, zk, app, pass,fileName);
+				entity.setCode("0");
+				entity.setMsg("success");
+			}else{
+				entity.setCode("1");
+				entity.setMsg("存在正在运行的应用,无法部署,请将应用下线,并等待一分钟后再试");
+			}
 		} catch (AofException e) {
 			entity.setCode(e.getErrorCode()+"");
 			entity.setMsg(e.getMessage());
@@ -338,15 +369,22 @@ public class ConfigCenterForRunController {
 	@RequestMapping("/manager/base_edit_run_dss_save")
 	public @ResponseBody Object baseEditRunDssSave(@RequestBody CcBaseEntity ccBaseEntity, HttpServletRequest res) {
 		String app=(String)res.getSession().getAttribute(AofCcProps.SESSION_APP);
-		String pass=(String)res.getSession().getAttribute(AofCcProps.SESSION_PASS);
-		ZooKeeper zk=(ZooKeeper)res.getSession().getAttribute(AofCcProps.SESSION_ZK);
+		String pass=ZooKeeperClientHolder.getZkPass(app);
+		ZooKeeper zk=ZooKeeperClientHolder.getZooKeeper(app);
 		logger.info("存储新的正式配置 应用名称["+app+"]");
 		ResultEntity entity = new ResultEntity();
 		try {
-			zooKeeperService.saveBaseConfig(ccBaseEntity, zk, app, pass);
-			entity.setCode("0");
-			entity.setMsg("success");
-			zooKeeperService.notifyDssMonitor(zk, app, pass);
+			//校验是否存在活着的节点
+			if(!zooKeeperService.hasActiveApp(zk, app)){
+				zooKeeperService.saveBaseConfig(ccBaseEntity, zk, app, pass);
+				entity.setCode("0");
+				entity.setMsg("success");
+				zooKeeperService.notifyDssMonitor(zk, app, pass);
+			}else{
+				entity.setCode("1");
+				entity.setMsg("存在正在运行的应用,无法部署,请将应用下线,并等待一分钟后再试");
+			}
+			
 		} catch (AofException e) {
 			entity.setCode(e.getErrorCode()+"");
 			entity.setMsg(e.getMessage());
@@ -364,14 +402,21 @@ public class ConfigCenterForRunController {
 	@RequestMapping("/manager/base_edit_run_shard_save")
 	public @ResponseBody Object baseEditRunShardSave(@RequestBody CcBaseEntity ccBaseEntity, HttpServletRequest res) {
 		String app=(String)res.getSession().getAttribute(AofCcProps.SESSION_APP);
-		String pass=(String)res.getSession().getAttribute(AofCcProps.SESSION_PASS);
-		ZooKeeper zk=(ZooKeeper)res.getSession().getAttribute(AofCcProps.SESSION_ZK);
+		String pass=ZooKeeperClientHolder.getZkPass(app);
+		ZooKeeper zk=ZooKeeperClientHolder.getZooKeeper(app);
 		logger.info("存储新的正式分区分表配置 应用名称["+app+"]");
 		ResultEntity entity = new ResultEntity();
 		try {
-			zooKeeperService.saveShardingConfig(ccBaseEntity, zk, app, pass);
-			entity.setCode("0");
-			entity.setMsg("success");
+			//校验是否存在活着的节点
+			if(!zooKeeperService.hasActiveApp(zk, app)){
+				zooKeeperService.saveShardingConfig(ccBaseEntity, zk, app, pass);
+				entity.setCode("0");
+				entity.setMsg("success");
+			}else{
+				entity.setCode("1");
+				entity.setMsg("存在正在运行的应用,无法部署,请将应用下线,并等待一分钟后再试");
+			}
+			
 		} catch (AofException e) {
 			entity.setCode(e.getErrorCode()+"");
 			entity.setMsg(e.getMessage());
@@ -389,9 +434,8 @@ public class ConfigCenterForRunController {
 	@RequestMapping("/manager/base_edit_run_save/{fileName}")
 	public @ResponseBody Object baseEditRunSave(@RequestBody CcBaseEntity ccBaseEntity, @PathVariable("fileName") String fileName,HttpServletRequest res) {
 		String app=(String)res.getSession().getAttribute(AofCcProps.SESSION_APP);
-		String pass=(String)res.getSession().getAttribute(AofCcProps.SESSION_PASS);
-		//String fileName=(String)res.getSession().getAttribute(AofCcProps.TEMPNAME);
-		ZooKeeper zk=(ZooKeeper)res.getSession().getAttribute(AofCcProps.SESSION_ZK);
+		String pass=ZooKeeperClientHolder.getZkPass(app);
+		ZooKeeper zk=ZooKeeperClientHolder.getZooKeeper(app);
 		logger.info("存储新的临时配置 应用名称["+app+"] 配置名称["+fileName+"]");
 		ResultEntity entity = new ResultEntity();
 		try {
@@ -415,7 +459,7 @@ public class ConfigCenterForRunController {
 	@RequestMapping("/manager/edit_run_check_file")
 	public @ResponseBody Object editDevCheckFile(@RequestParam String fileName,HttpServletRequest res){
 		String app=(String)res.getSession().getAttribute(AofCcProps.SESSION_APP);
-		ZooKeeper zk=(ZooKeeper)res.getSession().getAttribute(AofCcProps.SESSION_ZK);
+		ZooKeeper zk=ZooKeeperClientHolder.getZooKeeper(app);
 		logger.info("校验新的临时配置 应用名称["+app+"] 配置名称["+fileName+"]");
 		ResultEntity entity=new ResultEntity();
 		if(zooKeeperService.getAppNodeStat(SysProps.AOF_TEMP_ROOT+"/"+app+SysProps.AOF_APP_BASE+"_"+fileName, zk)!=null){
@@ -436,7 +480,7 @@ public class ConfigCenterForRunController {
 	@RequestMapping("/manager/init_check_appNode")
 	public @ResponseBody Object initAppNodeStat(HttpServletRequest res){
 		String app=(String)res.getSession().getAttribute(AofCcProps.SESSION_APP);
-		ZooKeeper zk=(ZooKeeper)res.getSession().getAttribute(AofCcProps.SESSION_ZK);
+		ZooKeeper zk=ZooKeeperClientHolder.getZooKeeper(app);
 		logger.info("检查各个节点心跳状态 应用名称["+app+"]");
 		ResultEntity entity=new ResultEntity();
 		try {
@@ -453,7 +497,7 @@ public class ConfigCenterForRunController {
 	@RequestMapping("/manager/del_app_node")
 	public @ResponseBody Object deleteAppNode(@RequestParam String nodeName,HttpServletRequest res){
 		String app=(String)res.getSession().getAttribute(AofCcProps.SESSION_APP);
-		ZooKeeper zk=(ZooKeeper)res.getSession().getAttribute(AofCcProps.SESSION_ZK);
+		ZooKeeper zk=ZooKeeperClientHolder.getZooKeeper(app);
 		logger.info("删除节点 应用名称["+app+"] 节点名称["+nodeName+"]");
 		ResultEntity entity=new ResultEntity();
 		try {
@@ -469,7 +513,7 @@ public class ConfigCenterForRunController {
 	@RequestMapping("/manager/del_temp_config")
 	public @ResponseBody Object deleteTempConfig(@RequestParam String nodeName,HttpServletRequest res){
 		String app=(String)res.getSession().getAttribute(AofCcProps.SESSION_APP);
-		ZooKeeper zk=(ZooKeeper)res.getSession().getAttribute(AofCcProps.SESSION_ZK);
+		ZooKeeper zk=ZooKeeperClientHolder.getZooKeeper(app);
 		logger.info("删除临时配置 应用名称["+app+"] 配置名称["+nodeName+"]");
 		ResultEntity entity=new ResultEntity();
 		try {
@@ -491,7 +535,7 @@ public class ConfigCenterForRunController {
 	@RequestMapping("/manager/pre_active_dss")
 	public @ResponseBody Object preActiveDss(@RequestBody List<AppNode> nodeList , HttpServletRequest res) {
 		String app=(String)res.getSession().getAttribute(AofCcProps.SESSION_APP);
-		ZooKeeper zk=(ZooKeeper)res.getSession().getAttribute(AofCcProps.SESSION_ZK);
+		ZooKeeper zk=ZooKeeperClientHolder.getZooKeeper(app);
 		logger.info("预激活数据源配置 应用名称["+app+"] ");
 		ResultEntity entity = new ResultEntity();
 		try {
@@ -515,7 +559,7 @@ public class ConfigCenterForRunController {
 	@RequestMapping("/manager/pre_active_biz")
 	public @ResponseBody Object preActiveBiz(@RequestBody List<AppNode> nodeList ,HttpServletRequest res) {
 		String app=(String)res.getSession().getAttribute(AofCcProps.SESSION_APP);
-		ZooKeeper zk=(ZooKeeper)res.getSession().getAttribute(AofCcProps.SESSION_ZK);
+		ZooKeeper zk=ZooKeeperClientHolder.getZooKeeper(app);
 		logger.info("预激活数据源配置 应用名称["+app+"] ");
 		ResultEntity entity = new ResultEntity();
 		try {
@@ -538,7 +582,7 @@ public class ConfigCenterForRunController {
 	@RequestMapping("/manager/init_commit_appNode")
 	public @ResponseBody Object initCommitAppNode(@RequestBody List<AppNode> nodeList,HttpServletRequest res){
 		String app=(String)res.getSession().getAttribute(AofCcProps.SESSION_APP);
-		ZooKeeper zk=(ZooKeeper)res.getSession().getAttribute(AofCcProps.SESSION_ZK);
+		ZooKeeper zk=ZooKeeperClientHolder.getZooKeeper(app);
 		logger.info("检查各个节点预提交状态 应用名称["+app+"]");
 		ResultEntity entity=new ResultEntity();
 		try {
@@ -561,8 +605,8 @@ public class ConfigCenterForRunController {
 	@RequestMapping("/manager/commit_active_dss/{tempName}")
 	public @ResponseBody Object commitActiveDss(@RequestBody List<AppNode> nodeList ,@PathVariable("tempName") String tempName, HttpServletRequest res) {
 		String app=(String)res.getSession().getAttribute(AofCcProps.SESSION_APP);
-		ZooKeeper zk=(ZooKeeper)res.getSession().getAttribute(AofCcProps.SESSION_ZK);
-		String pass=(String)res.getSession().getAttribute(AofCcProps.SESSION_PASS);
+		String pass=ZooKeeperClientHolder.getZkPass(app);
+		ZooKeeper zk=ZooKeeperClientHolder.getZooKeeper(app);
 		logger.info("激活数据源配置 应用名称["+app+"] ");
 		ResultEntity entity = new ResultEntity();
 		try {
@@ -587,8 +631,8 @@ public class ConfigCenterForRunController {
 	@RequestMapping("/manager/commit_active_biz/{tempName}")
 	public @ResponseBody Object commitActiveBiz(@RequestBody List<AppNode> nodeList, @PathVariable("tempName") String tempName , HttpServletRequest res) {
 		String app=(String)res.getSession().getAttribute(AofCcProps.SESSION_APP);
-		String pass=(String)res.getSession().getAttribute(AofCcProps.SESSION_PASS);
-		ZooKeeper zk=(ZooKeeper)res.getSession().getAttribute(AofCcProps.SESSION_ZK);
+		String pass=ZooKeeperClientHolder.getZkPass(app);
+		ZooKeeper zk=ZooKeeperClientHolder.getZooKeeper(app);
 		logger.info("激活数据源配置 应用名称["+app+"] ");
 		ResultEntity entity = new ResultEntity();
 		try {
@@ -612,7 +656,7 @@ public class ConfigCenterForRunController {
 	@RequestMapping("/manager/check_commit_appNode")
 	public @ResponseBody Object checkCommitAppNode(@RequestBody List<AppNode> nodeList,HttpServletRequest res){
 		String app=(String)res.getSession().getAttribute(AofCcProps.SESSION_APP);
-		ZooKeeper zk=(ZooKeeper)res.getSession().getAttribute(AofCcProps.SESSION_ZK);
+		ZooKeeper zk=ZooKeeperClientHolder.getZooKeeper(app);
 		logger.info("检查各个节点的提交状态 应用名称["+app+"]");
 		ResultEntity entity=new ResultEntity();
 		try {
@@ -636,7 +680,7 @@ public class ConfigCenterForRunController {
 	public @ResponseBody Object bizEditRun(@RequestParam String fileName,HttpServletRequest request){
 		logger.info("获取自定义配置信息-热部署模式");
 		String app=(String)request.getSession().getAttribute(AofCcProps.SESSION_APP);
-		ZooKeeper zk=(ZooKeeper)request.getSession().getAttribute(AofCcProps.SESSION_ZK);
+		ZooKeeper zk=ZooKeeperClientHolder.getZooKeeper(app);
 		ResultEntity entity = new ResultEntity();
 		try {
 			//BIZ改动为两部分 一部分来源于biz目录 一部分来源于biz_split目录 biz目录默认给一个名字为空字符串
@@ -661,7 +705,7 @@ public class ConfigCenterForRunController {
 	@RequestMapping("/manager/edit_run_check_biz_file")
 	public @ResponseBody Object editDevCheckBizFile(@RequestParam String fileName,HttpServletRequest res){
 		String app=(String)res.getSession().getAttribute(AofCcProps.SESSION_APP);
-		ZooKeeper zk=(ZooKeeper)res.getSession().getAttribute(AofCcProps.SESSION_ZK);
+		ZooKeeper zk=ZooKeeperClientHolder.getZooKeeper(app);
 		logger.info("校验新的临时配置 应用名称["+app+"] 配置名称["+fileName+"]");
 		ResultEntity entity=new ResultEntity();
 		if(zooKeeperService.getAppNodeStat(SysProps.AOF_TEMP_ROOT+"/"+app+SysProps.AOF_APP_BIZ+"_"+fileName, zk)!=null){
@@ -683,9 +727,8 @@ public class ConfigCenterForRunController {
 	@RequestMapping("/manager/biz_edit_run_save/{fileName}")
 	public @ResponseBody Object bizEditRunSave(@RequestBody Map<String,Map<String,CcBizEntity>> ccBase,@PathVariable("fileName") String fileName, HttpServletRequest res) {
 		String app=(String)res.getSession().getAttribute(AofCcProps.SESSION_APP);
-		String pass=(String)res.getSession().getAttribute(AofCcProps.SESSION_PASS);
-//		String fileName=(String)res.getSession().getAttribute(AofCcProps.TEMPNAME);
-		ZooKeeper zk=(ZooKeeper)res.getSession().getAttribute(AofCcProps.SESSION_ZK);
+		String pass=ZooKeeperClientHolder.getZkPass(app);
+		ZooKeeper zk=ZooKeeperClientHolder.getZooKeeper(app);
 		logger.info("存储新的临时配置 应用名称["+app+"] 配置名称["+fileName+"]");
 		ResultEntity entity = new ResultEntity();
 		try {
@@ -703,8 +746,8 @@ public class ConfigCenterForRunController {
 	@RequestMapping("/manager/biz_edit_run_cold_save")
 	public @ResponseBody Object bizEditRunColdSave(@RequestBody Map<String,Map<String,CcBizEntity>> ccBase, HttpServletRequest res) {
 		String app=(String)res.getSession().getAttribute(AofCcProps.SESSION_APP);
-		String pass=(String)res.getSession().getAttribute(AofCcProps.SESSION_PASS);
-		ZooKeeper zk=(ZooKeeper)res.getSession().getAttribute(AofCcProps.SESSION_ZK);
+		String pass=ZooKeeperClientHolder.getZkPass(app);
+		ZooKeeper zk=ZooKeeperClientHolder.getZooKeeper(app);
 		logger.info("存储新的配置 应用名称["+app+"]");
 		ResultEntity entity = new ResultEntity();
 		if(ccBase.size()==0){
@@ -713,9 +756,15 @@ public class ConfigCenterForRunController {
 			return entity;
 		}
 		try {
-			zooKeeperService.saveBizEntity(ccBase, zk, app, pass);
-			entity.setCode("0");
-			entity.setMsg("success");
+			if(!zooKeeperService.hasActiveApp(zk, app)){
+				zooKeeperService.saveBizEntity(ccBase, zk, app, pass);
+				entity.setCode("0");
+				entity.setMsg("success");
+			}else{
+				entity.setCode("1");
+				entity.setMsg("存在正在运行的应用,无法部署,请将应用下线,并等待一分钟后再试");
+			}
+			
 		} catch (AofException e) {
 			entity.setCode(e.getErrorCode()+"");
 			entity.setMsg(e.getMessage());

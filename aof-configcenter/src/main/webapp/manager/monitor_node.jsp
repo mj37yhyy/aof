@@ -68,6 +68,9 @@ function refresh(){
 		     }else{
 		    	alert(msg.msg);
 		     }
+		   },
+		   error:function(){
+			   location.href="session_timeout.jsp";
 		   }
 	});
 }

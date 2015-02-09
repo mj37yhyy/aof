@@ -27,6 +27,7 @@ import autonavi.online.framework.configcenter.commons.AppNode;
 import autonavi.online.framework.configcenter.exception.AofException;
 import autonavi.online.framework.configcenter.exception.AofExceptionEnum;
 import autonavi.online.framework.configcenter.service.ZookeeperService;
+import autonavi.online.framework.configcenter.util.ZooKeeperClientHolder;
 import autonavi.online.framework.configcenter.util.ZookeeperInit;
 import autonavi.online.framework.metadata.entity.ColumnAttribute;
 import autonavi.online.framework.sharding.index.SegmentTable;
@@ -178,7 +179,7 @@ public class ZookeeperServiceImplNew implements ZookeeperService {
 	}
 
 	@Override
-	public ZooKeeper loginAppRoot(String appRoot, String passwd) {
+	public ZooKeeper loginAppRoot(String appRoot, String passwd,String sessionId,Boolean isDev) {
 		// 从ZK获取应用的校验信息
 		try {
 			if (!ZooKeeperUtils.checkZKNodeIsExist(zookeeperInit.getZoo(),
@@ -189,9 +190,32 @@ public class ZookeeperServiceImplNew implements ZookeeperService {
 			}
 			String pass = ZooKeeperUtils.getZkNode(zookeeperInit.getZoo(),
 					SysProps.AOF_ROOT + SysProps.AOF_PASS + "/" + appRoot);
+			
 			if (pass.equals(passwd)) {
 				logger.info("校验成功[" + appRoot + "]");
-				return zookeeperInit.generateAppZoo(appRoot, passwd);
+				ZooKeeper zk=zookeeperInit.generateAppZoo(appRoot, passwd);
+				if(isDev){
+					//开发模式下 不缓存ZK连接 不记录sessionId 不做单点登录处理
+					logger.info("登录模式为开发模式");
+				}else{
+					logger.info("登录模式为运行模式");
+					//释放旧有资源,设置新资源
+					ZooKeeperClientHolder.modifyZkPass(appRoot, passwd);
+					ZooKeeperClientHolder.modifyZooKeeper(appRoot, zk);
+					
+					//检测是否存在单点登录校验点
+					boolean flag =ZooKeeperUtils.checkZKNodeIsExist(zookeeperInit.getZoo(), SysProps.AOF_ROOT + SysProps.AOF_PASS + "/" + appRoot+SysProps.LOGIN_FLAG, false);
+					
+					//用户登录加锁
+					ZooKeeperUtils.startTransaction(zk);
+					ZooKeeperUtils.setACL(generateACL(appRoot,passwd));
+					if(!flag)
+					    ZooKeeperUtils.createSafeZKNode(SysProps.AOF_ROOT + SysProps.AOF_PASS + "/" + appRoot+SysProps.LOGIN_FLAG, sessionId.getBytes(SysProps.CHARSET));
+					else
+						ZooKeeperUtils.setZkNode(SysProps.AOF_ROOT + SysProps.AOF_PASS + "/" + appRoot+SysProps.LOGIN_FLAG, sessionId.getBytes(SysProps.CHARSET));
+					ZooKeeperUtils.commit();
+				}
+				return zk;
 			} else {
 				logger.error("校验失败[" + appRoot + "]");
 				throw new AofException(AofExceptionEnum.APPROOT_LOGIN_ERROR);
@@ -202,6 +226,8 @@ public class ZookeeperServiceImplNew implements ZookeeperService {
 			}
 			logger.error(e.getMessage(), e);
 			throw new AofException(AofExceptionEnum.ZOOKEEPER_USE_ERROR);
+		}finally{
+			ZooKeeperUtils.close();
 		}
 	}
 
@@ -1065,19 +1091,35 @@ public class ZookeeperServiceImplNew implements ZookeeperService {
 
 	@Override
 	public void notifyDssMonitor(ZooKeeper zk, String appName, String password) {
-		try {
-			String path = SysProps.AOF_ROOT + "/" + appName
-					+ SysProps.AOF_APP_BASE;
-			ZooKeeperUtils.startTransaction(zk);
-			ZooKeeperUtils.setACL(this.generateACL(appName, password));
-			ZooKeeperUtils.setZkNode(path+SysProps.AOF_APP_DSS, SysProps.DSS_CHANGE_BY_INFO.getBytes(SysProps.CHARSET));
-			ZooKeeperUtils.commit();
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-			throw new AofException(AofExceptionEnum.ZOOKEEPER_USE_ERROR);
-		}finally{
-			ZooKeeperUtils.close();
+//		try {
+//			String path = SysProps.AOF_ROOT + "/" + appName
+//					+ SysProps.AOF_APP_BASE;
+//			ZooKeeperUtils.startTransaction(zk);
+//			ZooKeeperUtils.setACL(this.generateACL(appName, password));
+//			ZooKeeperUtils.setZkNode(path+SysProps.AOF_APP_DSS, SysProps.DSS_CHANGE_BY_INFO.getBytes(SysProps.CHARSET));
+//			ZooKeeperUtils.commit();
+//		} catch (Exception e) {
+//			logger.error(e.getMessage(), e);
+//			throw new AofException(AofExceptionEnum.ZOOKEEPER_USE_ERROR);
+//		}finally{
+//			ZooKeeperUtils.close();
+//		}
+		/**
+		 * 等待监控完成后 直接更新一个监控的目录 提示监控通过轮询方式更新数据源配置
+		 */
+	}
+
+	@Override
+	public boolean hasActiveApp(ZooKeeper zk, String app) {
+		List<AppNode> l=this.checkAppNodesStats(zk, app);
+		boolean activeNode=false;
+		for(AppNode node:l){
+			if((node.getSystemTime()-node.getUpdateTime())/1000<=SysProps.MAX_HEART_SPLIT_TIME){
+				activeNode=true;
+				break;
+			}
 		}
+		return activeNode;
 	}
 
 

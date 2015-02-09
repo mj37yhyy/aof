@@ -63,5 +63,10 @@ public class SysProps {
 	//数据源由监控上线或者下线
 	public final static String DSS_CHANGE_BY_ACTIVE="2";
 	
+	//应用程序刷新心跳极限值 单位秒
+	public final static long MAX_HEART_SPLIT_TIME=60;
+	//登录标记
+	public final static String LOGIN_FLAG="/LOGIN";
+	
 
 }

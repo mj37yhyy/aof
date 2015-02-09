@@ -75,6 +75,9 @@ function importConfig(type){
 					   alert(msg.msg)
 					   $("#importConfigInfo").find("#startImportConfig").removeAttr("disabled");
 				   }
+			   },
+			   error:function(){
+				   location.href="session_timeout.jsp";
 			   }
 		});
 	});
