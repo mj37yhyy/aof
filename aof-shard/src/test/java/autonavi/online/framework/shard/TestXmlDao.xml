@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mapper namespace="autonavi.online.framework.shard.TestXmlDao"
+	xmlns="http://www.autonavi.com/schema/mapper" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.autonavi.com/schema/mapper http://www.autonavi.com/schema/mapper/aof-mapper.xsd">
+	
+	<select id="queryDemoIds" dataSourceKey="1" collectionType="columnList" resultType="java.lang.Long">
+		select id from demo_1
+	</select>
+	
+</mapper>

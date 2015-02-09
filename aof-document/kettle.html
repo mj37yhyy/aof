@@ -1,0 +1,160 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- Meta, title, CSS, favicons, etc. -->
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="在线服务新框架">
+
+<title>图盟科技架构组-Kettle简介</title>
+
+<!-- Bootstrap core CSS -->
+<link href="css/bootstrap.min.css" rel="stylesheet">
+
+<link href="css/patch.css" rel="stylesheet">
+
+<!-- Documentation extras -->
+<link href="css/docs.min.css" rel="stylesheet">
+<!--[if lt IE 9]><script src="../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
+<script src="js/ie-emulation-modes-warning.js"></script>
+
+<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!--[if lt IE 9]>
+  <script src="http://cdn.bootcss.com/html5shiv/3.7.0/html5shiv.js"></script>
+  <script src="http://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+<![endif]-->
+
+<!-- Favicons -->
+<link rel="apple-touch-icon-precomposed"
+	href="/apple-touch-icon-precomposed.png">
+<link rel="icon" href="favicon.ico">
+
+</head>
+<body>
+	<a class="sr-only sr-only-focusable" href="#content">Skip to main
+		content</a>
+
+
+	<!-- Docs page layout -->
+	<div class="bs-docs-header" id="content">
+		<div class="container">
+			<h1>Kettle简介</h1>
+			<p>图盟科技有限公司架构组</p>
+
+		</div>
+	</div>
+
+	<div class="container bs-docs-container">
+
+		<div class="row">
+			<div class="col-md-9" role="main">
+				<div class="bs-docs-section">
+					<h1 id="kettle" class="page-header">Kettle</h1>
+					<h3 id="whatIsKettle" class="page-header">Kettle是什么</h3>
+					<p>
+						Kettle 也叫 PDI，在2006年 Kettle 加入了开源的 BI 组织 Pentaho, 正式命名为<strong>PDI</strong>，英文全称为<strong>Pentaho
+							Data Integeration</strong>。Kettle 是“Kettle E.T.T.L.
+						Envirnonment”只取首字母的缩写，这意味着它被设计用来帮助你实现你的ETTL需要：抽取、转换、装入和加载数据；翻译成中文名称应该叫水壶，名字的起源正如该项目的主程序员
+						MATT 在一个论坛里说的那样：希望把各种数据放到一个壶里然后以一种指定的格式流出。
+					</p>
+					<p>
+						更新信息可以访问：<a herf="http://www.pentaho.com/product/data-integration">http://www.pentaho.com/product/data-integration</a>
+					</p>
+					<h3 id="kettleBasics" class="page-header">Kettle基础</h3>
+					<h3 id="downloadAndInstall" class="page-header">下载及安装</h3>
+				</div>
+				<div class="bs-docs-section">
+					<h1 id="basics" class="page-header">基础知识</h1>
+					<h3 id="whatIsETL" class="page-header">什么是ETL</h3>
+					<h3 id="whatIsDataWarehouse" class="page-header">什么是数据仓库</h3>
+					<h3 id="34SubSystemOfETL" class="page-header">ETL的34个子系统</h3>
+					<h3 id="theFactTableAndDimensionTable" class="page-header">事实表和维度表</h3>
+					<h3 id="starAndSnowflake" class="page-header">星型结构和雪花结构</h3>
+					<h3 id="extractionCleaningAndChecking" class="page-header">抽取、清洗和校验</h3>
+					<h3 id="CDC" class="page-header">变更数据捕获（CDC）</h3>
+				</div>
+				<div class="bs-docs-section">
+					<h1 id="useKettle" class="page-header">Kettle使用</h1>
+					<h3 id="spoon" class="page-header">Spoon</h3>
+					<p>Spoon是一个图形用户界面，它允许你运行转换或者任务</p>
+					<h3 id="inputAndOutput" class="page-header">输入和输出</h3>
+					<h3 id="transformationAndJob" class="page-header">转换和作业</h3>
+					<h3 id="resourceLibrary" class="page-header">资源库</h3>
+					<h3 id="ketchenAndPan" class="page-header">Ketchen和Pan</h3>
+					<p>Pan是一个数据转换引擎，它可以执行很多功能，例如：从不同的数据源读取、操作和写入数据。Kitchen是一个可以运行利用XML或数据资源库描述的任务。通常任务是在规定的时间间隔内用批处理的模式自动运行。</p>
+					<h3 id="carte" class="page-header">Carte</h3>
+					<h3 id="configurationFileAndEncryption" class="page-header">配置文件和加密</h3>
+				</div>
+			</div>
+			<div class="col-md-3">
+				<div class="bs-docs-sidebar hidden-print hidden-xs hidden-sm"
+					role="complementary">
+					<ul class="nav bs-docs-sidenav">
+
+						<li><a href="#kettle">Kettle</a>
+							<ul class="nav">
+								<li><a href="#whatIsKettle">Kettle是什么</a></li>
+								<li><a href="#kettleBasics">Kettle基础</a></li>
+								<li><a href="#downloadAndInstall">下载及安装</a></li>
+							</ul></li>
+						<li><a href="#basics">基础知识</a>
+							<ul class="nav">
+								<li><a href="#whatIsETL">什么是ETL</a></li>
+								<li><a href="#whatIsDataWarehouse">什么是数据仓库</a></li>
+								<li><a href="#34SubSystemOfETL">ETL的34个子系统</a></li>
+								<li><a href="#theFactTableAndDimensionTable">事实表和维度表</a></li>
+								<li><a href="#starAndSnowflake">星型结构和雪花结构</a></li>
+								<li><a href="#extractionCleaningAndChecking">抽取、清洗和校验</a></li>
+								<li><a href="#CDC">变更数据捕获（CDC）</a></li>
+							</ul></li>
+						<li><a href="#useKettle">Kettle使用</a>
+							<ul class="nav">
+								<li><a href="#spoon">Spoon</a></li>
+								<li><a href="#inputAndOutput">输入和输出</a></li>
+								<li><a href="#transformationAndJob">转换和作业</a></li>
+								<li><a href="#resourceLibrary">资源库</a></li>
+								<li><a href="#ketchenAndPan">Ketchen和Pan</a></li>
+								<li><a href="#carte">Carte</a></li>
+								<li><a href="#configurationFileAndEncryption">配置文件和加密</a></li>
+							</ul></li>
+					</ul>
+					<a class="back-to-top" href="#top"> 返回顶部 </a>
+
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Footer
+================================================== -->
+	<footer class="bs-docs-footer" role="contentinfo">
+		<div class="container">
+
+
+			<p>
+				Designed and built with all the love in the world by <a
+					href="http://twitter.com/mdo" target="_blank">@mdo</a> and <a
+					href="http://twitter.com/fat" target="_blank">@fat</a>.
+			</p>
+			<p>本项目源码目前不开放，由图盟科技有限公司-架构组进行维护</p>
+			<ul class="bs-docs-footer-links muted">
+				<li>当前版本： v1.0.0</li>
+			</ul>
+		</div>
+	</footer>
+
+	<!-- Bootstrap core JavaScript
+================================================== -->
+	<!-- Placed at the end of the document so the pages load faster -->
+	<script src="js/jquery-1.11.1.min.js"></script>
+	<script src="js/bootstrap.min.js"></script>
+	<script src="js/docs.min.js"></script>
+
+	<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+	<script src="js/ie10-viewport-bug-workaround.js"></script>
+
+
+</body>
+</html>

@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<xsd:schema xmlns="http://www.autonavi.com/schema/mapper"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.autonavi.com/schema/mapper"
+	elementFormDefault="qualified" attributeFormDefault="unqualified">
+
+	<xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+
+	<xsd:element name="mapper">
+		<xsd:complexType>
+			<xsd:choice minOccurs="0" maxOccurs="unbounded">
+				<xsd:element ref="cache"></xsd:element>
+				<xsd:element ref="cache-ref"></xsd:element>
+				<xsd:element ref="insert"></xsd:element>
+				<xsd:element ref="update"></xsd:element>
+				<xsd:element ref="delete"></xsd:element>
+				<xsd:element ref="select"></xsd:element>
+			</xsd:choice>
+			<xsd:attribute name="namespace" use="required">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:pattern value="([a-zA-Z0-9_.])+" />
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:attribute>
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:element name="cache-ref">
+		<xsd:complexType>
+			<xsd:attribute name="namespace" type="xsd:string" use="required"></xsd:attribute>
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:element name="cache">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="property" minOccurs="0" maxOccurs="unbounded">
+					<xsd:complexType>
+						<xsd:attribute name="name" type="xsd:string" use="required"></xsd:attribute>
+						<xsd:attribute name="value" type="xsd:string" use="required"></xsd:attribute>
+					</xsd:complexType>
+				</xsd:element>
+			</xsd:sequence>
+			<xsd:attribute name="type" type="xsd:string"></xsd:attribute>
+			<xsd:attribute name="eviction" type="xsd:string"></xsd:attribute>
+			<xsd:attribute name="flushInterval" type="xsd:string"></xsd:attribute>
+			<xsd:attribute name="size" type="xsd:string"></xsd:attribute>
+			<xsd:attribute name="readOnly" type="xsd:string"></xsd:attribute>
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:attributeGroup name="optionAttr">
+		<xsd:attribute name="id" type="xsd:string" use="required"></xsd:attribute>
+		<xsd:attribute name="indexName" type="xsd:string"></xsd:attribute>
+		<xsd:attribute name="indexColumn" type="xsd:string"></xsd:attribute>
+		<xsd:attribute name="dataSourceKey" type="xsd:int"></xsd:attribute>
+		<xsd:attribute name="dataSourceKeyName" type="xsd:string"></xsd:attribute>
+		<!-- <xsd:attribute name="parameterType" type="xsd:string"></xsd:attribute> -->
+		<xsd:attribute name="collectionType">
+			<xsd:simpleType>
+				<xsd:restriction base="xsd:string">
+					<xsd:enumeration value="array" />
+					<xsd:enumeration value="arrayList" />
+					<xsd:enumeration value="map" />
+					<xsd:enumeration value="mapList" />
+					<xsd:enumeration value="bean" />
+					<xsd:enumeration value="beanList" />
+					<xsd:enumeration value="column" />
+					<xsd:enumeration value="columnList" />
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:attribute>
+		<xsd:attribute name="resultType" type="xsd:string"></xsd:attribute>
+		<xsd:attribute name="shardingHandle" type="xsd:string"
+			default="autonavi.online.framework.sharding.index.ShardingHandleSupport"></xsd:attribute>
+	</xsd:attributeGroup>
+
+	<xsd:group name="allowableElementGroup">
+		<xsd:choice>
+			<xsd:element ref="trim"></xsd:element>
+			<xsd:element ref="where"></xsd:element>
+			<xsd:element ref="set"></xsd:element>
+			<xsd:element ref="foreach"></xsd:element>
+			<xsd:element ref="if"></xsd:element>
+			<xsd:element ref="choose"></xsd:element>
+		</xsd:choice>
+	</xsd:group>
+
+	<xsd:element name="select">
+		<xsd:complexType mixed="true">
+			<xsd:group ref="allowableElementGroup" minOccurs="0"
+				maxOccurs="unbounded"></xsd:group>
+			<xsd:attributeGroup ref="optionAttr" />
+			<!-- <xsd:attribute name="resultCallBackClass" type="xsd:string"></xsd:attribute> -->
+			<xsd:attribute name="skip" type="xsd:string"></xsd:attribute>
+			<xsd:attribute name="size" type="xsd:string"></xsd:attribute>
+			<xsd:attribute name="isQueryCount" type="xsd:boolean"
+				default="false"></xsd:attribute>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="insert">
+		<xsd:complexType mixed="true">
+			<xsd:group ref="allowableElementGroup" minOccurs="0"
+				maxOccurs="unbounded"></xsd:group>
+			<xsd:attributeGroup ref="optionAttr" />
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="update">
+		<xsd:complexType mixed="true">
+			<xsd:group ref="allowableElementGroup" minOccurs="0"
+				maxOccurs="unbounded"></xsd:group>
+			<xsd:attributeGroup ref="optionAttr" />
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="delete">
+		<xsd:complexType mixed="true">
+			<xsd:group ref="allowableElementGroup" minOccurs="0"
+				maxOccurs="unbounded"></xsd:group>
+			<xsd:attributeGroup ref="optionAttr" />
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="trim">
+		<xsd:complexType mixed="true">
+			<xsd:group ref="allowableElementGroup" minOccurs="0"
+				maxOccurs="unbounded"></xsd:group>
+			<xsd:attribute name="prefix" type="xsd:string"></xsd:attribute>
+			<xsd:attribute name="prefixOverrides" type="xsd:string"></xsd:attribute>
+			<xsd:attribute name="suffix" type="xsd:string"></xsd:attribute>
+			<xsd:attribute name="suffixOverrides" type="xsd:string"></xsd:attribute>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="where">
+		<xsd:complexType mixed="true">
+			<xsd:group ref="allowableElementGroup" minOccurs="0"
+				maxOccurs="unbounded"></xsd:group>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="set">
+		<xsd:complexType mixed="true">
+			<xsd:group ref="allowableElementGroup" minOccurs="0"
+				maxOccurs="unbounded"></xsd:group>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="if">
+		<xsd:complexType mixed="true">
+			<xsd:group ref="allowableElementGroup" minOccurs="0"
+				maxOccurs="unbounded"></xsd:group>
+			<xsd:attribute name="test" type="xsd:string" use="required"></xsd:attribute>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="foreach">
+		<xsd:complexType mixed="true">
+			<xsd:group ref="allowableElementGroup" minOccurs="0"
+				maxOccurs="unbounded"></xsd:group>
+			<xsd:attribute name="collection" type="xsd:string"></xsd:attribute>
+			<xsd:attribute name="item" type="xsd:string"></xsd:attribute>
+			<xsd:attribute name="index" type="xsd:string"></xsd:attribute>
+			<xsd:attribute name="open" type="xsd:string"></xsd:attribute>
+			<xsd:attribute name="close" type="xsd:string"></xsd:attribute>
+			<xsd:attribute name="separator" type="xsd:string"></xsd:attribute>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="choose">
+		<xsd:complexType mixed="true">
+			<xsd:sequence>
+				<xsd:element name="when" minOccurs="1" maxOccurs="unbounded">
+					<xsd:complexType mixed="true">
+						<xsd:group ref="allowableElementGroup" minOccurs="0"
+							maxOccurs="unbounded"></xsd:group>
+						<xsd:attribute name="test" type="xsd:string" use="required"></xsd:attribute>
+					</xsd:complexType>
+				</xsd:element>
+				<xsd:element name="otherwise" minOccurs="0" maxOccurs="1">
+					<xsd:complexType mixed="true">
+						<xsd:group ref="allowableElementGroup" minOccurs="0"
+							maxOccurs="unbounded"></xsd:group>
+					</xsd:complexType>
+				</xsd:element>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+</xsd:schema>

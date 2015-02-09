@@ -50,3 +50,5 @@ $RECYCLE.BIN/
 *.msi
 *.msm
 *.msp
+*.svn-base
+aof-configcenter/.settings/org.eclipse.core.resources.prefs

@@ -1,0 +1,3 @@
+http\://www.autonavi.com/schema/shard/aof-shard.xsd=autonavi/online/framework/config/aof-shard.xsd
+
+http\://www.autonavi.com/schema/shardConfigCenter/shard-cc.xsd=autonavi/online/framework/config/shard-cc.xsd

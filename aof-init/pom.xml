@@ -1,0 +1,171 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<parent>
+		<groupId>com.autonavi.onlineframework</groupId>
+		<artifactId>aof-parent</artifactId>
+		<version>2.0.0-SNAPSHOT</version>
+	</parent>
+	<modelVersion>4.0.0</modelVersion>
+
+	<artifactId>aof-init</artifactId>
+	<packaging>jar</packaging>
+
+	<name>aof-init</name>
+	<url>http://maven.apache.org</url>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<mysql-connector-java.version>5.1.30</mysql-connector-java.version>
+		<spring.version>3.0.7.RELEASE</spring.version>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.11</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.autonavi.onlineframework</groupId>
+			<artifactId>aof-shard-spring</artifactId>
+			<version>2.0.0-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<version>2.5</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>${mysql-connector-java.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-beans</artifactId>
+			<version>${spring.version}</version>
+			<scope>provided</scope>
+		</dependency>
+	</dependencies>
+	<distributionManagement>
+		<snapshotRepository>
+			<id>snapshots</id>
+			<name>aof-init</name>
+			<url>http://10.19.2.9:8081/nexus/content/repositories/snapshots/</url>
+		</snapshotRepository>
+		<repository>
+			<id>release</id>
+			<name>aof-init</name>
+			<url>http://10.19.2.9:8081/nexus/content/repositories/releases/</url>
+		</repository>
+	</distributionManagement>
+	<build>
+		<!-- <resources> <resource> <directory>src/main/java</directory> <excludes> 
+			<exclude>*.java</exclude> </excludes> <includes> <include>META-INF/**</include> 
+			</includes> </resource> </resources> -->
+		<!-- 以下为了解决报错：maven-dependency-plugin (goals "copy-dependencies","unpack") 
+			is not supported by m2e -->
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>1.0.0</version>
+					<configuration>
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>org.apache.maven.plugins</groupId>
+										<artifactId>maven-dependency-plugin</artifactId>
+										<versionRange>[2.0,)</versionRange>
+										<goals>
+											<goal>copy-dependencies</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore />
+									</action>
+								</pluginExecution>
+							</pluginExecutions>
+						</lifecycleMappingMetadata>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.1</version>
+				<configuration>
+					<source>1.6</source>
+					<target>1.6</target>
+					<encoding>UTF8</encoding>
+				</configuration>
+			</plugin>
+			<!-- 打包时跳过测试 -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<skip>true</skip>
+				</configuration>
+			</plugin>
+			<!-- <plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-jar-plugin</artifactId> 
+				<configuration> <archive> <manifest> <addClasspath>true</addClasspath> <classpathPrefix>lib/</classpathPrefix> 
+				</manifest> </archive> </configuration> </plugin> -->
+			<!-- <plugin> <groupId>com.thoughtworks.paranamer</groupId> <artifactId>paranamer-maven-plugin</artifactId> 
+				<executions> <execution> <id>run</id> <configuration> <sourceDirectory>${project.build.sourceDirectory}</sourceDirectory> 
+				<outputDirectory>${project.build.outputDirectory}</outputDirectory> </configuration> 
+				<goals> <goal>generate</goal> </goals> </execution> </executions> </plugin> -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<version>1.7</version>
+				<!-- <executions> -->
+				<!-- <execution> -->
+				<!-- <phase>compile</phase> -->
+				<!-- <configuration> -->
+				<!-- <tasks> -->
+				<!-- <replaceregexp file="src/main/resources/META-INF/version.txt" -->
+				<!-- match=".*" replace="${project.version}" byline="true" /> -->
+				<!-- </tasks> -->
+				<!-- </configuration> -->
+				<!-- <goals> -->
+				<!-- <goal>run</goal> -->
+				<!-- </goals> -->
+				<!-- </execution> -->
+				<!-- </executions> -->
+			</plugin>
+			<plugin>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>2.1</version>
+				<configuration>
+					<attach>true</attach>
+				</configuration>
+				<executions>
+					<execution>
+						<phase>compile</phase>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<!-- <plugin> <groupId>com.idfconnect.devtools</groupId> <artifactId>idfc-proguard-maven-plugin</artifactId> 
+				<version>1.0.1</version> <executions> <execution> <phase>package</phase> 
+				<goals> <goal>obfuscate</goal> </goals> </execution> </executions> <configuration> 
+				<inputFile>${project.build.outputDirectory}</inputFile> <libraryJarPaths> 
+				<libraryJarPath>${java.home}/lib/jce.jar</libraryJarPath> </libraryJarPaths> 
+				<excludeManifests>false</excludeManifests> <excludeMavenDescriptor>false</excludeMavenDescriptor> 
+				<outputArtifacts> <outputArtifact> <file>${project.build.finalName}.${project.packaging}</file> 
+				</outputArtifact> </outputArtifacts> </configuration> <dependencies> <dependency> 
+				<groupId>net.sf.proguard</groupId> <artifactId>proguard-base</artifactId> 
+				<version>5.0</version> </dependency> </dependencies> </plugin> -->
+		</plugins>
+	</build>
+</project>

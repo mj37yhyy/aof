@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<info>
+	<infoitem key="airDestinationFolder" value="C:\Users\jia.miao\Desktop" />
+	<infoitem key="airDestinationFileName" value="roadApp.air" />
+	<infoitem key="airChosenCert" value="C:\Users\jia.miao\Desktop\12345" />
+	<infoitem key="airPackageType" value="packageAIR" />
+	<infoitem key="airRememberPassword" value="true" />
+	<infoitem key="airFilesList" value="" />
+	<infoitem key="airFullFilesList" value="index.html" />
+</info>
