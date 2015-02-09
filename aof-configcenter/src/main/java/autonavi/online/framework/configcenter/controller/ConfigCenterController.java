@@ -37,12 +37,12 @@ public class ConfigCenterController {
 	 * @return
 	 */
 	@RequestMapping("/appLogin")
-	public @ResponseBody Object appLogin(@RequestParam String appName,@RequestParam String password,@RequestParam Boolean isDev,HttpServletRequest res){
+	public @ResponseBody Object appLogin(@RequestParam("appName") String appName,@RequestParam("password") String password,@RequestParam("isDev") Boolean isDev,HttpServletRequest res){
 		logger.info("应用尝试登录配置服务器进行管理 应用名称["+appName+"]");
 		ResultEntity entity=new ResultEntity();
 		Map<String,Object> prop=new HashMap<String,Object>();
 		try {
-			ZooKeeper zk=zookeeperService.loginAppRoot(appName, password,res.getSession().getId(),isDev);
+			zookeeperService.loginAppRoot(appName, password,res.getSession().getId(),isDev);
 			entity.setCode("0");
 			entity.setMsg("success");
 			res.getSession().setAttribute(AofCcProps.SESSION_APP, appName);
@@ -51,11 +51,6 @@ public class ConfigCenterController {
 				res.getSession().setAttribute(AofCcProps.SESSION_FLAG_RUN, false);
 				prop.put("isDev", true);
 				entity.setResult(prop);
-				try {
-					zk.close();
-				} catch (InterruptedException e) {
-					logger.error(e.getMessage(),e);
-				}
 			}else{
 				res.getSession().setAttribute(AofCcProps.SESSION_FLAG_RUN, true);
 			}
@@ -82,7 +77,7 @@ public class ConfigCenterController {
 		return "login";
 	}
 	@RequestMapping("/manager/index")
-	public @ResponseBody Object index(HttpServletRequest res,@RequestParam String id){
+	public @ResponseBody Object index(HttpServletRequest res,@RequestParam("id") String id){
 		logger.info("初始化应用配置树");
 //		ResultEntity entity=new ResultEntity();
 		List<TreeNode> l1=new ArrayList<TreeNode>();
@@ -132,7 +127,7 @@ public class ConfigCenterController {
 		}
 	}
 	@RequestMapping("/addAppUser")
-	public @ResponseBody Object addAppUser(@RequestParam String adminName,@RequestParam String adminPass,@RequestParam String appName,@RequestParam String appPass,HttpServletRequest res){
+	public @ResponseBody Object addAppUser(@RequestParam("adminName") String adminName,@RequestParam("adminPass") String adminPass,@RequestParam("appName") String appName,@RequestParam("appPass") String appPass,HttpServletRequest res){
 		ResultEntity entity=new ResultEntity();
 		try {
 			if(zookeeperService.checkAdminUser(adminName, adminPass)){

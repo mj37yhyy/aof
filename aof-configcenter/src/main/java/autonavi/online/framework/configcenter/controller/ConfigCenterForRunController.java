@@ -103,7 +103,7 @@ public class ConfigCenterForRunController {
 	 * @return
 	 */
 	@RequestMapping("/manager/base_edit_run")
-	public @ResponseBody Object baseEditRun(@RequestParam String fileName,HttpServletRequest request, HttpServletRequest response){
+	public @ResponseBody Object baseEditRun(@RequestParam("fileName") String fileName,HttpServletRequest request, HttpServletRequest response){
 		logger.info("获取base数据源列表");
 		String app=(String)request.getSession().getAttribute(AofCcProps.SESSION_APP);
 		ZooKeeper zk=ZooKeeperClientHolder.getZooKeeper(app);
@@ -228,7 +228,7 @@ public class ConfigCenterForRunController {
 	
 	@SuppressWarnings("unchecked")
 	@RequestMapping("/manager/import_dss_config")
-	public @ResponseBody Object importDssConfig(@RequestParam String imports, HttpServletRequest res) {
+	public @ResponseBody Object importDssConfig(@RequestParam("imports") String imports, HttpServletRequest res) {
 		ResultEntity entity = new ResultEntity();
 		CcBaseEntity ccBaseEntity=null;
 		try {
@@ -284,7 +284,7 @@ public class ConfigCenterForRunController {
 	 */
 	@SuppressWarnings("unchecked")
 	@RequestMapping("/manager/import_biz_config")
-	public @ResponseBody Object importBizConfig(@RequestParam String imports, HttpServletRequest res) {
+	public @ResponseBody Object importBizConfig(@RequestParam("imports") String imports, HttpServletRequest res) {
 		ResultEntity entity = new ResultEntity();
 		Map<String,CcBizEntity> ccBase=new HashMap<String,CcBizEntity>();
 		try{
@@ -326,7 +326,7 @@ public class ConfigCenterForRunController {
 	 */
 	@SuppressWarnings("unchecked")
 	@RequestMapping("/manager/import_biz_config/{fileName}")
-	public @ResponseBody Object importBizConfigSplit(@RequestParam String imports,@PathVariable("fileName") String fileName, HttpServletRequest res) {
+	public @ResponseBody Object importBizConfigSplit(@RequestParam("imports") String imports,@PathVariable("fileName") String fileName, HttpServletRequest res) {
 		ResultEntity entity = new ResultEntity();
 		Map<String,CcBizEntity> ccBase=new HashMap<String,CcBizEntity>();
 		try{
@@ -457,7 +457,7 @@ public class ConfigCenterForRunController {
 	 * @return
 	 */
 	@RequestMapping("/manager/edit_run_check_file")
-	public @ResponseBody Object editDevCheckFile(@RequestParam String fileName,HttpServletRequest res){
+	public @ResponseBody Object editDevCheckFile(@RequestParam("fileName") String fileName,HttpServletRequest res){
 		String app=(String)res.getSession().getAttribute(AofCcProps.SESSION_APP);
 		ZooKeeper zk=ZooKeeperClientHolder.getZooKeeper(app);
 		logger.info("校验新的临时配置 应用名称["+app+"] 配置名称["+fileName+"]");
@@ -495,7 +495,7 @@ public class ConfigCenterForRunController {
 		return entity;
 	}
 	@RequestMapping("/manager/del_app_node")
-	public @ResponseBody Object deleteAppNode(@RequestParam String nodeName,HttpServletRequest res){
+	public @ResponseBody Object deleteAppNode(@RequestParam("nodeName") String nodeName,HttpServletRequest res){
 		String app=(String)res.getSession().getAttribute(AofCcProps.SESSION_APP);
 		ZooKeeper zk=ZooKeeperClientHolder.getZooKeeper(app);
 		logger.info("删除节点 应用名称["+app+"] 节点名称["+nodeName+"]");
@@ -511,7 +511,7 @@ public class ConfigCenterForRunController {
 		return entity;
 	}
 	@RequestMapping("/manager/del_temp_config")
-	public @ResponseBody Object deleteTempConfig(@RequestParam String nodeName,HttpServletRequest res){
+	public @ResponseBody Object deleteTempConfig(@RequestParam("nodeName") String nodeName,HttpServletRequest res){
 		String app=(String)res.getSession().getAttribute(AofCcProps.SESSION_APP);
 		ZooKeeper zk=ZooKeeperClientHolder.getZooKeeper(app);
 		logger.info("删除临时配置 应用名称["+app+"] 配置名称["+nodeName+"]");
@@ -677,7 +677,7 @@ public class ConfigCenterForRunController {
 	 * @return
 	 */
 	@RequestMapping("/manager/biz_edit_run")
-	public @ResponseBody Object bizEditRun(@RequestParam String fileName,HttpServletRequest request){
+	public @ResponseBody Object bizEditRun(@RequestParam("fileName") String fileName,HttpServletRequest request){
 		logger.info("获取自定义配置信息-热部署模式");
 		String app=(String)request.getSession().getAttribute(AofCcProps.SESSION_APP);
 		ZooKeeper zk=ZooKeeperClientHolder.getZooKeeper(app);
@@ -703,7 +703,7 @@ public class ConfigCenterForRunController {
 	 * @return
 	 */
 	@RequestMapping("/manager/edit_run_check_biz_file")
-	public @ResponseBody Object editDevCheckBizFile(@RequestParam String fileName,HttpServletRequest res){
+	public @ResponseBody Object editDevCheckBizFile(@RequestParam("fileName") String fileName,HttpServletRequest res){
 		String app=(String)res.getSession().getAttribute(AofCcProps.SESSION_APP);
 		ZooKeeper zk=ZooKeeperClientHolder.getZooKeeper(app);
 		logger.info("校验新的临时配置 应用名称["+app+"] 配置名称["+fileName+"]");

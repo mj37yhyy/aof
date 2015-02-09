@@ -131,7 +131,7 @@ public class ConfigCenterForDevController {
 	 * @return
 	 */
 	@RequestMapping("/manager/base_edit_dev")
-	public @ResponseBody Object baseEditDev(@RequestParam String fileName,HttpServletRequest res){
+	public @ResponseBody Object baseEditDev(@RequestParam("fileName") String fileName,HttpServletRequest res){
 		String app=(String)res.getSession().getAttribute(AofCcProps.SESSION_APP);
 		logger.info("读取JSON配置文件 应用名称["+app+"] 文件名称["+fileName+"]");
 		ResultEntity entity=new ResultEntity();
@@ -270,7 +270,7 @@ public class ConfigCenterForDevController {
 	 */
 	@RequestMapping("/manager/biz_edit_dev")
 	@SuppressWarnings("unchecked")
-	public @ResponseBody Object bizEditDev(@RequestParam String fileName,HttpServletRequest res){
+	public @ResponseBody Object bizEditDev(@RequestParam("fileName") String fileName,HttpServletRequest res){
 		String app=(String)res.getSession().getAttribute(AofCcProps.SESSION_APP);
 		logger.info("读取JSON配置文件 应用名称["+app+"] 文件名称["+fileName+"]");
 		ResultEntity entity=new ResultEntity();
@@ -464,7 +464,7 @@ public class ConfigCenterForDevController {
 	 * @return
 	 */
 	@RequestMapping("/manager/edit_dev_check_file")
-	public @ResponseBody Object editDevCheckFile(@RequestParam String fileName,HttpServletRequest res){
+	public @ResponseBody Object editDevCheckFile(@RequestParam("fileName") String fileName,HttpServletRequest res){
 		String app=(String)res.getSession().getAttribute(AofCcProps.SESSION_APP);
 		logger.info("校验新的配置文件 应用名称["+app+"] 文件名称["+fileName+"]");
 		ResultEntity entity=new ResultEntity();
@@ -488,7 +488,7 @@ public class ConfigCenterForDevController {
 	 * @return
 	 */
 	@RequestMapping("/manager/edit_dev_check_biz_file")
-	public @ResponseBody Object editDevCheckBizFile(@RequestParam String fileName,HttpServletRequest res){
+	public @ResponseBody Object editDevCheckBizFile(@RequestParam("fileName") String fileName,HttpServletRequest res){
 		String app=(String)res.getSession().getAttribute(AofCcProps.SESSION_APP);
 		logger.info("校验新的配置文件 应用名称["+app+"] 文件名称["+fileName+"]");
 		ResultEntity entity=new ResultEntity();
