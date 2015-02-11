@@ -57,7 +57,7 @@ public class MonitorZooKeeper {
 		appRoot = SysProps.ZK_MONITOR_ROOT + zooKeeperProp.getProjectName();
 		appTimeStamp = appRoot + SysProps.TIMESTAMPS;
 		appServer = appRoot + SysProps.SERVERS + "/" + name + "_" + ip + "_"
-				+ Miscellaneous.getNodeIndex();
+				+ Miscellaneous.getMyid();
 		appVersion = appRoot + SysProps.VERSION;
 		zkVersion = appServer + SysProps.VERSION_ZK;
 		appServers = appRoot + SysProps.SERVERS;

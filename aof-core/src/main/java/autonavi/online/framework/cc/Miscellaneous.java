@@ -20,7 +20,7 @@ public class Miscellaneous {
 
 	static private int myid = 0;//
 
-	public static int getNodeIndex() {
+	public static int getMyid() {
 		return myid;
 	}
 

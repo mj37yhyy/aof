@@ -137,8 +137,8 @@ public class ConfigCenterFromZooKeeper implements InitBaseConfig {
 	public CcBaseEntity getShardingConfig(ZooKeeper zk,String appName)throws Exception{
 		CcBaseEntity entity = new CcBaseEntity();
 		appName="/"+appName;
-		Map<String, CcDataSource> m = this.getDS(zk,appName);
-		entity.setDataSources(this.initShardDS(zk, m,appName));
+		Map<Integer, CcDataSource> m_p=this.getProxyDS(zk,appName);
+		entity.setDataSources(m_p);
 		if(entity.getDataSources().size()>0){
 			entity.setShardIndex(this.initShardIndex(zk, entity.getDataSources(),appName));
 		}else{
@@ -307,37 +307,6 @@ public class ConfigCenterFromZooKeeper implements InitBaseConfig {
 			}
 		}
 		return map;
-	}
-    /**
-     * 获取分库信息
-     * @param zk
-     * @param map
-     * @return
-     * @throws KeeperException
-     * @throws InterruptedException
-     * @throws ZKExistingDataSourceKeyException
-     * @throws Exception
-     */
-	private Map<Integer, CcDataSource> initShardDS(ZooKeeper zk,
-			Map<String, CcDataSource> map,String appName,String...tempPath) throws KeeperException,
-			InterruptedException, ZKExistingDataSourceKeyException, Exception {
-		Map<Integer, CcDataSource> result = new HashMap<Integer, CcDataSource>();
-		String path = ROOT + appName + BASE_SHARD_DSS;
-		if(tempPath!=null&&tempPath.length>=1){
-			path=SysProps.AOF_TEMP_ROOT+appName+tempPath[0]+SysProps.AOF_APP_SHARD+SysProps.AOF_APP_DSS;
-		}
-		List<String> children = zk.getChildren(path, false, null);
-		for (String child : children) {
-			Integer key = Integer.valueOf(child);
-			if (result.containsKey(key))
-				throw new ZKExistingDataSourceKeyException("存在重复的数据源key，请检查配置");
-			byte[] data = zk.getData(path + "/" + child, false, null);
-			if (data != null) {
-				String dataStr = new String(data, "utf-8");
-				result.put(key, map.get(dataStr));
-			}
-		}
-		return result;
 	}
     /**
      * 获取分库索引表信息
