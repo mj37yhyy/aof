@@ -91,12 +91,15 @@ public class AspectJExpressionPointcut {
 			return this.pointcutExpression
 					.couldMatchJoinPointsInType(targetClass);
 		} catch (ReflectionWorldException rwe) {
-			logger.debug("PointcutExpression matching rejected target class",
-					rwe);
+			if (logger.isDebugEnabled())
+				logger.debug(
+						"PointcutExpression matching rejected target class",
+						rwe);
 			return false;
 		} catch (BCException ex) {
-			logger.debug("PointcutExpression matching rejected target class",
-					ex);
+			if (logger.isDebugEnabled())
+				logger.debug(
+						"PointcutExpression matching rejected target class", ex);
 			return false;
 		}
 	}

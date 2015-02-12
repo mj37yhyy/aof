@@ -59,7 +59,8 @@ public abstract class AbstractDaoSupport {
 						&& daoEntity.getIndexColumn() == null
 						&& daoEntity.getSingleDataSourceKey() > 0) {// 如果配了单一数据源且没有配分片且当前操作为单库分表的，报错
 					String errorMessage = "由于该操作已涉及单库分表，在配置了单一数据源后还必须配置分片信息，因为框架要确定该操作是如何分表的。";
-					log.error(errorMessage);
+					if (log.isErrorEnabled())
+						log.error(errorMessage);
 					throw new Exception(errorMessage);
 				}
 				Object[] indexColumnValue = getIndexColumnValue(daoEntity, sg);// 获取索引字段的值
@@ -91,7 +92,8 @@ public abstract class AbstractDaoSupport {
 										daoEntity.getStartOrSkip());
 							} catch (ClassCastException cce) {
 								String errorMessage = "转换分页参数startOrSkip时发生异常，请使用正确的类型：int";
-								log.error(errorMessage, cce);
+								if (log.isErrorEnabled())
+									log.error(errorMessage, cce);
 								throw new ClassCastException(errorMessage);
 							}
 							try {
@@ -100,7 +102,8 @@ public abstract class AbstractDaoSupport {
 										daoEntity.getEndOrRowSize());
 							} catch (ClassCastException cce) {
 								String errorMessage = "转换分页参数endOrRowSize时发生异常，请使用正确的类型：int";
-								log.error(errorMessage, cce);
+								if (log.isErrorEnabled())
+									log.error(errorMessage, cce);
 								throw new ClassCastException(errorMessage);
 							}
 						}
@@ -152,7 +155,8 @@ public abstract class AbstractDaoSupport {
 			}
 
 		} catch (Exception e) {
-			log.error(e.getMessage(), e);
+			if (log.isErrorEnabled())
+				log.error(e.getMessage(), e);
 			this.rollback();// 回滚
 			throw e;
 		} finally {
@@ -255,7 +259,8 @@ public abstract class AbstractDaoSupport {
 		try {
 			sqlHelper.openIndexCache();
 		} catch (Exception e) {
-			log.error(e.getMessage(), e);
+			if (log.isErrorEnabled())
+				log.error(e.getMessage(), e);
 			throw new RuntimeException("持久化索引信息到缓存错误");
 		}
 	}
@@ -264,7 +269,8 @@ public abstract class AbstractDaoSupport {
 		try {
 			sqlHelper.closeIndexCache();
 		} catch (Exception e) {
-			log.error(e.getMessage(), e);
+			if (log.isErrorEnabled())
+				log.error(e.getMessage(), e);
 			throw new RuntimeException("从缓存释放索引信息错误");
 		}
 	}

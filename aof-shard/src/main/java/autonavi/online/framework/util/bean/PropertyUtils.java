@@ -87,9 +87,10 @@ public class PropertyUtils {
 				result = getterMethod.invoke(result);
 			}
 			if (result == null) {
-				log.warn("入参可能为空，请检查入参 expression="
-						+ expression.replaceAll("\\[[0-9]\\]",
-								ReservedWord.index));
+				if (log.isWarnEnabled())
+					log.warn("入参可能为空，请检查入参 expression="
+							+ expression.replaceAll("\\[[0-9]\\]",
+									ReservedWord.index));
 			}
 			i++;
 		}

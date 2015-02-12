@@ -179,7 +179,7 @@ public class ZookeeperServiceImplNew implements ZookeeperService {
 	}
 
 	@Override
-	public ZooKeeper loginAppRoot(String appRoot, String passwd,String sessionId,Boolean isDev) {
+	public void loginAppRoot(String appRoot, String passwd,String sessionId,Boolean isDev) {
 		// 从ZK获取应用的校验信息
 		try {
 			if (!ZooKeeperUtils.checkZKNodeIsExist(zookeeperInit.getZoo(),
@@ -193,11 +193,12 @@ public class ZookeeperServiceImplNew implements ZookeeperService {
 			
 			if (pass.equals(passwd)) {
 				logger.info("校验成功[" + appRoot + "]");
-				ZooKeeper zk=zookeeperInit.generateAppZoo(appRoot, passwd);
+				
 				if(isDev){
 					//开发模式下 不缓存ZK连接 不记录sessionId 不做单点登录处理
 					logger.info("登录模式为开发模式");
 				}else{
+					ZooKeeper zk=zookeeperInit.generateAppZoo(appRoot, passwd);
 					logger.info("登录模式为运行模式");
 					//释放旧有资源,设置新资源
 					ZooKeeperClientHolder.modifyZkPass(appRoot, passwd);
@@ -215,7 +216,7 @@ public class ZookeeperServiceImplNew implements ZookeeperService {
 						ZooKeeperUtils.setZkNode(SysProps.AOF_ROOT + SysProps.AOF_PASS + "/" + appRoot+SysProps.LOGIN_FLAG, sessionId.getBytes(SysProps.CHARSET));
 					ZooKeeperUtils.commit();
 				}
-				return zk;
+				
 			} else {
 				logger.error("校验失败[" + appRoot + "]");
 				throw new AofException(AofExceptionEnum.APPROOT_LOGIN_ERROR);
@@ -789,7 +790,7 @@ public class ZookeeperServiceImplNew implements ZookeeperService {
 		try {
 			String basePath=SysProps.ZK_MONITOR_ROOT+appName;
 			String version=UniqueIDFactory.getIdWorker(IdWorkerType.snowflake)
-					.nextId(Miscellaneous.getNodeIndex())+SysProps.PRECOMMIT_FLAG;
+					.nextId(Miscellaneous.getMyid())+SysProps.PRECOMMIT_FLAG;
 			ZooKeeperUtils.startTransaction(zk);
 			ZooKeeperUtils.setZkNode(basePath+SysProps.BIZ_VERSION, version.getBytes(SysProps.CHARSET));
 			for(AppNode node:nodeList){

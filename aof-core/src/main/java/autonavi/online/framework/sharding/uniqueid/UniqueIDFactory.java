@@ -1,5 +1,6 @@
 package autonavi.online.framework.sharding.uniqueid;
 
+import autonavi.online.framework.sharding.uniqueid.support.IdWorkerFromRedis;
 import autonavi.online.framework.sharding.uniqueid.support.IdWorkerFromSnowflake;
 
 public class UniqueIDFactory {
@@ -9,7 +10,7 @@ public class UniqueIDFactory {
 			return new IdWorkerFromSnowflake();
 		}
 		if (idWorkerType.equals(IdWorkerType.redis)) {
-			return null;
+			return new IdWorkerFromRedis();
 		}
 		return null;
 	}

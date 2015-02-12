@@ -46,7 +46,8 @@ public class EhcacheUtils {
 			count = cacheCount.get(this.getCache().getName());
 		}
 		if (oper.equals(EhcacheUtils.OPEN_TIMEOUT)) {
-			log.info("将分区信息缓存设置为自动超时");
+			if (log.isInfoEnabled())
+				log.info("将分区信息缓存设置为自动超时");
 			if (count - 1 == 0) {
 				config.setTimeToIdleSeconds(60);
 				config.setTimeToLiveSeconds(60);
@@ -54,7 +55,8 @@ public class EhcacheUtils {
 			cacheCount.put(this.getCache().getName(), count - 1);
 			return count - 1;
 		} else if (oper.equals(EhcacheUtils.CLOSE_TIMEOUT)) {
-			log.info("将分区信息全部加在DAO缓存");
+			if (log.isInfoEnabled())
+				log.info("将分区信息全部加在DAO缓存");
 			if (count == 0L) {
 				config.setTimeToIdleSeconds(0);
 				config.setTimeToLiveSeconds(0);

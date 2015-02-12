@@ -28,7 +28,7 @@ public class CreateIndexTables {
 			Map<String, List<ColumnAttribute>> indexTableMap) throws Exception {
 		this.dataSource = dataSource;
 		this.indexTableMap = indexTableMap;
-		//this.init();
+		// this.init();
 	}
 
 	/**
@@ -80,9 +80,10 @@ public class CreateIndexTables {
 					ShardingSupportType columnType = ShardingSupportType
 							.getSupportByType(column.getColumnType());
 					if (columnType == null) {
-						log.error("column=[" + column.getColumnName()
-								+ "] type=[" + column.getColumnType()
-								+ "] is not supprt for shard!");
+						if (log.isErrorEnabled())
+							log.error("column=[" + column.getColumnName()
+									+ "] type=[" + column.getColumnType()
+									+ "] is not supprt for shard!");
 						System.exit(0);
 						throw new RuntimeException("column=["
 								+ column.getColumnName() + "] type=["
@@ -121,7 +122,8 @@ public class CreateIndexTables {
 				form.setFormAttributeList(list);
 
 				SessionFactoryEntity sessionFactoryEntity = new SessionFactoryEntity();
-				sessionFactoryEntity.setDialect(DialectUtils.getDialect4Hibernate(meta));// 得到方言
+				sessionFactoryEntity.setDialect(DialectUtils
+						.getDialect4Hibernate(meta));// 得到方言
 				TableGenerator tg = new TableGenerator(sessionFactoryEntity,
 						form);
 				tg.generatorTable(this.dataSource);// 创建表
@@ -181,7 +183,8 @@ public class CreateIndexTables {
 			form.setFormAttributeList(list);
 
 			SessionFactoryEntity sessionFactoryEntity = new SessionFactoryEntity();
-			sessionFactoryEntity.setDialect(DialectUtils.getDialect4Hibernate(meta));// 得到方言
+			sessionFactoryEntity.setDialect(DialectUtils
+					.getDialect4Hibernate(meta));// 得到方言
 			TableGenerator tg = new TableGenerator(sessionFactoryEntity, form);
 			tg.generatorTable(this.dataSource);// 创建表
 

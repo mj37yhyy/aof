@@ -20,12 +20,14 @@ public class SqlPrint {
 		if (Miscellaneous.show_sql) {
 			log = LogManager.getLogger(tagetClass);
 			if (null != sql && sql.length() > 0) {
-				log.debug("Preparing:[ " + sql + " ]");
+				if (log.isDebugEnabled())
+					log.debug("Preparing:[ " + sql + " ]");
 			}
 			if (null != sqlParameters && sqlParameters.length() > 0) {
-				log.debug("Parameters:[ "
-						+ sqlParameters.substring(0, sqlParameters.length() - 2)
-						+ " ]");
+				if (log.isDebugEnabled())
+					log.debug("Parameters:[ "
+							+ sqlParameters.substring(0,
+									sqlParameters.length() - 2) + " ]");
 			}
 		}
 

@@ -30,16 +30,20 @@ public class MessageListener {
 				} else {
 					ip = HostUtils.getFristLocalHost();// 得到第一个网卡的地址
 				}
-				log.info("正在使用地址【" + ip + "】启动监听服务。");
+				if (log.isInfoEnabled())
+					log.info("正在使用地址【" + ip + "】启动监听服务。");
 				new TcpServer().run(ip, port, this.handlers);// 启动服务
-				log.info("监听服务启动成功！");
+				if (log.isInfoEnabled())
+					log.info("监听服务启动成功！");
 			} catch (Exception e) {
 				e.printStackTrace();
-				log.error("监听服务启动失败！即将结束启动线程。", e);
+				if (log.isErrorEnabled())
+					log.error("监听服务启动失败！即将结束启动线程。", e);
 				System.exit(0);// 停止启动线程
 			}
 		} else {// 如果没有handler就不启动服务了
-			log.warn("监听服务未检测到任何handler，系统将无法接收任何消息。");
+			if (log.isWarnEnabled())
+				log.warn("监听服务未检测到任何handler，系统将无法接收任何消息。");
 		}
 	}
 

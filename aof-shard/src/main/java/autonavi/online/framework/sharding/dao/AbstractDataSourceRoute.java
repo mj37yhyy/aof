@@ -66,7 +66,7 @@ public abstract class AbstractDataSourceRoute {
 			swlogger.stop();
 			swlogger.writeLog();
 		} catch (Exception e) {
-			log.error(e.getMessage(), e);
+			if(log.isErrorEnabled())log.error(e.getMessage(), e);
 			throw e;
 		}
 		return routeResult;

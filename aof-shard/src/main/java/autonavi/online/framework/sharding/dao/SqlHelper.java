@@ -367,8 +367,9 @@ public class SqlHelper {
 			for (String s : parameterMap.keySet()) {
 				buff1.append("[" + s + ":" + parameterMap.get(s) + "],");
 			}
-			log.warn("本次查询使用了分库字段" + buff.toString() + " 但是提供的入参"
-					+ buff1.toString() + "可能为空，没有记录可以插入，请检查");
+			if (log.isWarnEnabled())
+				log.warn("本次查询使用了分库字段" + buff.toString() + " 但是提供的入参"
+						+ buff1.toString() + "可能为空，没有记录可以插入，请检查");
 		}
 		// 根据根据不同的SQL到不同的数据源上进行查询，最后合并结果
 		for (Iterator<Integer> i = sqls.keySet().iterator(); i.hasNext();) {
@@ -493,7 +494,8 @@ public class SqlHelper {
 		try {
 			DaoHelper.setPrimaryKey(this.fillStatement(preparedStatement, sql,
 					parameterMap, sqlParameters, -1));// 返回主键（仅适用于insert）
-			log.info("开始执行SQL");
+			if (log.isInfoEnabled())
+				log.info("开始执行SQL");
 			SqlPrint.sqlAndParamConsuming(getClass(),
 					preparedStatement.getParsedQuery(),
 					sqlParameters.toString());// 打印SQL和参数
@@ -644,8 +646,9 @@ public class SqlHelper {
 			for (String s : parameterMap.keySet()) {
 				buff1.append("[" + s + ":" + parameterMap.get(s) + "],");
 			}
-			log.warn("本次更新使用了分库字段" + buff.toString() + " 但是提供的入参"
-					+ buff1.toString() + "可能为空，没有记录可以插入，请检查");
+			if (log.isWarnEnabled())
+				log.warn("本次更新使用了分库字段" + buff.toString() + " 但是提供的入参"
+						+ buff1.toString() + "可能为空，没有记录可以插入，请检查");
 		} else {
 			SqlPrint.sqlTimeconsuming(author, startTime, newSql);// 打印执行时间
 			SqlPrint.sqlAndParamConsuming(getClass(), null,
@@ -763,7 +766,8 @@ public class SqlHelper {
 							realKey == null ? key : realKey);
 					if (val == null) {
 						String errorMessage = "字段" + key + "的值不存在，请注意";
-						log.warn(errorMessage);
+						if (log.isWarnEnabled())
+							log.warn(errorMessage);
 					}
 				}
 				if (sqlParameters.length() < Miscellaneous.max_log_length)
@@ -937,7 +941,8 @@ public class SqlHelper {
 			conn = dataSourceRoute.getConnection(dsKey, openTx);
 			preparedStatement = new NamedParameterStatement(conn, sql,
 					parameterMap);
-			log.info("开始执行SQL" + preparedStatement.getParsedQuery());
+			if (log.isInfoEnabled())
+				log.info("开始执行SQL" + preparedStatement.getParsedQuery());
 			long startTime = System.currentTimeMillis();
 			preparedStatement.execute();
 			SqlPrint.sqlTimeconsuming(author, startTime, sql);// 打印SQL和参数

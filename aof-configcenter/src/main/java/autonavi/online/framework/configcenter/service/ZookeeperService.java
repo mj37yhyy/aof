@@ -23,7 +23,7 @@ public interface ZookeeperService {
 	 * @param appRoot
 	 * @param passwd
 	 */
-	public ZooKeeper loginAppRoot(String appRoot,String passwd,String sessionId,Boolean isDev);
+	public void loginAppRoot(String appRoot,String passwd,String sessionId,Boolean isDev);
 	/**
 	 * 获取节点状态
 	 * @param path

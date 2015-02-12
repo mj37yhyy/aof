@@ -24,22 +24,30 @@ public class IdWorkerFromSnowflake implements IdWorker {
 	private long sequenceMask = -1L ^ (-1L << sequenceBits);
 	private long lastTimestamp = -1L;
 
-	/*
-	 * public IdWorkerFromSnowflake(long workerId, long datacenterId) { //
-	 * sanity check for workerId if (workerId > maxWorkerId || workerId < 0) {
-	 * throw new IllegalArgumentException(String.format(
-	 * "worker Id can't be greater than %d or less than 0", maxWorkerId)); } if
-	 * (datacenterId > maxDatacenterId || datacenterId < 0) { throw new
-	 * IllegalArgumentException(String.format(
-	 * "datacenter Id can't be greater than %d or less than 0",
-	 * maxDatacenterId)); } this.workerId = workerId; this.datacenterId =
-	 * datacenterId; log.info(String .format(
-	 * "worker starting. timestamp left shift %d, datacenter id bits %d, worker id bits %d, sequence bits %d, workerid %d"
-	 * , timestampLeftShift, datacenterIdBits, workerIdBits, sequenceBits,
-	 * workerId)); }
-	 */
+	public IdWorkerFromSnowflake() {
+	}
 
-	protected synchronized long nextId() {
+	public IdWorkerFromSnowflake(long workerId, long datacenterId) {
+		// sanity check for workerId
+		if (workerId > maxWorkerId || workerId < 0) {
+			throw new IllegalArgumentException(String.format(
+					"worker Id can't be greater than %d or less than 0",
+					maxWorkerId));
+		}
+		if (datacenterId > maxDatacenterId || datacenterId < 0) {
+			throw new IllegalArgumentException(String.format(
+					"datacenter Id can't be greater than %d or less than 0",
+					maxDatacenterId));
+		}
+		this.workerId = workerId;
+		this.datacenterId = datacenterId;
+		log.info(String
+				.format("worker starting. timestamp left shift %d, datacenter id bits %d, worker id bits %d, sequence bits %d, workerid %d",
+						timestampLeftShift, datacenterIdBits, workerIdBits,
+						sequenceBits, workerId));
+	}
+
+	public synchronized long nextId() {
 		long timestamp = timeGen();
 		if (timestamp < lastTimestamp) {
 			log.error(String.format(
@@ -92,10 +100,6 @@ public class IdWorkerFromSnowflake implements IdWorker {
 		}
 		this.workerId = workerId;
 		this.datacenterId = datacenterId;
-		log.info(String
-				.format("worker starting. timestamp left shift %d, datacenter id bits %d, worker id bits %d, sequence bits %d, workerid %d",
-						timestampLeftShift, datacenterIdBits, workerIdBits,
-						sequenceBits, workerId));
 
 		return this.nextId();
 	}
@@ -108,11 +112,10 @@ public class IdWorkerFromSnowflake implements IdWorker {
 		// : 0)// 计算datacenterId，范围从0到31
 		// );
 		/*
-		 * 由于某些同学提出的问题
-		 * 使用纯数据源的主键生成方式可能会有重复 尽管概率非常的低
+		 * 由于某些同学提出的问题 使用纯数据源的主键生成方式可能会有重复 尽管概率非常的低
 		 * 目前改为纯采用雪花的原生算法计算支持32台主机乘以32台数据库的支持
 		 */
-		return this.nextId((long) Miscellaneous.getNodeIndex() - 1,
+		return this.nextId((long) Miscellaneous.getMyid() - 1,
 				(long) dataId - 1);
 	}
 }

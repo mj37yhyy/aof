@@ -56,14 +56,15 @@ public class ShardingIndex {
 			if (this.shardingIndexCacheUtils != null) {
 				if (this.shardingIndexCacheUtils
 						.openOrCloseCacheTimeOut(EhcacheUtils.CLOSE_TIMEOUT) == 1) {
-//					Connection conn = this.getConnection();
+					// Connection conn = this.getConnection();
 					try {
 						StringBuffer selectSQL = new StringBuffer();
 						selectSQL.append("select * from ");
 						selectSQL.append(tableName.toUpperCase());
 						list = new QueryRunner().query(conn,
 								selectSQL.toString(), new MapListHandler());
-						log.info("执行SQL " + selectSQL.toString());
+						if (log.isInfoEnabled())
+							log.info("执行SQL " + selectSQL.toString());
 						for (Map<String, Object> _map : list) {
 							ShardingIndexEntity shardingIndexEntity = new ShardingIndexEntity();
 							shardingIndexEntity.setId((Long) _map.get("id"));
@@ -130,8 +131,8 @@ public class ShardingIndex {
 	 */
 	public ShardingIndexEntity getShardingIndexEntity(String tableName,
 			Object[] indexColumn, Object[] indexColumnValue,
-			int singleDataSourceKey, ShardingHandle handle, String sql,Connection conn)
-			throws Exception {
+			int singleDataSourceKey, ShardingHandle handle, String sql,
+			Connection conn) throws Exception {
 		StopWatchLogger swlogger = new StopWatchLogger(this.getClass());// 打印耗时日志
 		swlogger.start("getShardingIndexEntity");
 		ShardingIndexEntity shardingIndexEntity = null;
@@ -160,7 +161,7 @@ public class ShardingIndex {
 					.get(cacheKey);
 		if (shardingIndexEntity == null) {
 			// 未发现分片信息
-			//Connection conn = this.getConnection();// 得到Spring管理的连接
+			// Connection conn = this.getConnection();// 得到Spring管理的连接
 			try {
 				// 查询当前表的字段，看是否与用户传入的字段匹配
 				shardingIndexEntity = this.selectFromOldTable(conn, tableName,
@@ -174,7 +175,8 @@ public class ShardingIndex {
 				}
 			} catch (Exception e) {// 如果发生异常，尝试从缓存中取得
 				e.printStackTrace();
-				log.error(e.getMessage(), e);
+				if (log.isErrorEnabled())
+					log.error(e.getMessage(), e);
 				if (this.shardingIndexCacheUtils != null)
 					shardingIndexEntity = (ShardingIndexEntity) this.shardingIndexCacheUtils
 							.get(cacheKey);
@@ -348,7 +350,8 @@ public class ShardingIndex {
 			conn.commit();
 		} catch (Exception e) {
 			conn.rollback();
-			log.error(e.getMessage(), e);
+			if (log.isErrorEnabled())
+				log.error(e.getMessage(), e);
 			throw e;
 		} finally {
 			swlogger.stop();
@@ -369,15 +372,15 @@ public class ShardingIndex {
 	public int getSegmentTableIndexVlaue(long indexTableID,
 			String segmentTableName, int count, int dsKey,
 			ShardingHandle handle, Object[] indexColumn,
-			Object[] indexColumnValue,Connection conn) throws Exception {
+			Object[] indexColumnValue, Connection conn) throws Exception {
 		Integer indexValue = 0;
 		String cacheKey = indexTableID + "_" + segmentTableName;
 		if (segmentTableNameCacheUtils != null) {// 先从缓存里取
 			indexValue = (Integer) segmentTableNameCacheUtils.get(cacheKey);
 		}
-		//Connection conn = null;
+		// Connection conn = null;
 		if (indexValue == null) {// 如果缓存里不存在
-//			conn = this.getConnection();
+			// conn = this.getConnection();
 			QueryRunner queryRunner = new QueryRunner();
 			// 先进行查询
 			String sql = "select INDEX_VALUE from "
@@ -431,10 +434,10 @@ public class ShardingIndex {
 		return indexValue;
 	}
 
-//	private Connection getConnection() throws ClassNotFoundException,
-//			InstantiationException, IllegalAccessException, SQLException {
-//		return DataSourceRoute.getConnection(this.index, false);
-//	}
+	// private Connection getConnection() throws ClassNotFoundException,
+	// InstantiationException, IllegalAccessException, SQLException {
+	// return DataSourceRoute.getConnection(this.index, false);
+	// }
 
 	/**
 	 * 获取新的索引ID<br/>

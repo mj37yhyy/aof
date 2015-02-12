@@ -2,6 +2,7 @@ package autonavi.online.framework.zookeeper;
 
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.zookeeper.CreateMode;
@@ -49,6 +50,30 @@ public class ZooKeeperUtils {
 	}
 	public static ZooKeeper getZK(){
 		return ZooKeeperHolder.zooKeeper.get();
+	}
+ 
+	/**
+	 * 自动创建父节点，如果不存在
+	 * @param path
+	 * @param bytes
+	 */
+	public static void autoSafeCreateParentZKNode(String path, byte[] bytes){
+		logger.info("创建节点完整路径:"+path);
+		//节点解析
+		String[] paths=path.split("/");
+		StringBuffer buffers=new StringBuffer("");
+		for(String _path:paths){
+			if(!StringUtils.isBlank(_path)){
+				buffers.append("/"+_path);
+				//检测是否存在
+				if(!checkZKNodeIsExist(buffers.toString(),false)){
+					createSafeZKNode(buffers.toString(),null);
+				}
+			}
+			
+		}
+		setZkNode(path,bytes);
+		
 	}
 
 	/**
@@ -271,6 +296,7 @@ public class ZooKeeperUtils {
 	 * 开始事务
 	 */
 	public static void startTransaction(ZooKeeper zooKeeper) {
+		ZooKeeperHolder.zooKeeper.set(zooKeeper);
 		ZooKeeperHolder.transaction.set(zooKeeper.transaction());
 		ZooKeeperHolder.commit.set(false);
 	}
