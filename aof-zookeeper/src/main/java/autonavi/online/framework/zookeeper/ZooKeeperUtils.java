@@ -123,11 +123,12 @@ public class ZooKeeperUtils {
 	public static void createSafeZKNode(String path, byte[] bytes,ZooKeeper zk) {
 		try {
 			List<ACL> acls=null;
-			if(ZooKeeperHolder.acls.get()==null||ZooKeeperHolder.acls.get().size()==0){
-				acls=Ids.OPEN_ACL_UNSAFE;
-			}else{
-				acls=ZooKeeperHolder.acls.get();
-			}
+//			if(ZooKeeperHolder.acls.get()==null||ZooKeeperHolder.acls.get().size()==0){
+//				acls=Ids.OPEN_ACL_UNSAFE;
+//			}else{
+//				acls=ZooKeeperHolder.acls.get();
+//			}
+			acls=Ids.OPEN_ACL_UNSAFE;
 			zk.create(path, bytes, acls,
 					CreateMode.PERSISTENT);
 		} catch (Exception e) {

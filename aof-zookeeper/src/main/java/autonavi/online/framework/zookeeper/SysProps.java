@@ -67,6 +67,8 @@ public class SysProps {
 	public final static long MAX_HEART_SPLIT_TIME=60;
 	//登录标记
 	public final static String LOGIN_FLAG="/LOGIN";
+	//数据源监控根目录
+	public final static String AOF_DB_MONITOR="/aof_db_monitor/m_db";
 	
 
 }
