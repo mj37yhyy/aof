@@ -4,11 +4,11 @@ import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.RootBeanDefinition;
 
-import autonavi.online.framework.config.IShardSupportConfig;
+import autonavi.online.framework.plugin.ShardConfigPlugInSupport;
 import autonavi.online.framework.sharding.dao.AbstractDaoSupport;
 import autonavi.online.framework.support.init.ShardIndexInit;
 
-public class ShardIndexInitConfig implements IShardSupportConfig {
+public class ShardIndexInitConfig implements ShardConfigPlugInSupport {
 
 	@Override
 	public void processShardSupportConfig(

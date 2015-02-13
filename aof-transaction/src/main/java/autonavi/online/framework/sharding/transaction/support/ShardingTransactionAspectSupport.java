@@ -7,8 +7,8 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import autonavi.online.framework.sharding.holder.DataSourceHolder;
+import autonavi.online.framework.sharding.holder.TimeOutHolder;
 import autonavi.online.framework.sharding.transaction.ConnectionTransactionManage;
-import autonavi.online.framework.sharding.transaction.holder.TimeOutHolder;
 import autonavi.online.framework.sharding.transaction.holder.TransactionAttributeHolder;
 import autonavi.online.framework.sharding.transaction.holder.TransactionHolder;
 import autonavi.online.framework.sharding.transaction.holder.TransactionManagerHolder;

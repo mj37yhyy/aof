@@ -17,9 +17,9 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import autonavi.online.framework.cc.CcBaseEntity;
-import autonavi.online.framework.cc.CcDataSource;
-import autonavi.online.framework.cc.Miscellaneous;
+import autonavi.online.framework.cc.entity.CcBaseEntity;
+import autonavi.online.framework.cc.entity.CcDataSource;
+import autonavi.online.framework.constant.Miscellaneous;
 import autonavi.online.framework.metadata.CreateTable;
 import autonavi.online.framework.metadata.DialectUtils;
 import autonavi.online.framework.metadata.TableGenerator;

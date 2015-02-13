@@ -12,7 +12,7 @@ import java.util.regex.Pattern;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;
 
-import autonavi.online.framework.cc.Miscellaneous;
+import autonavi.online.framework.constant.Miscellaneous;
 import autonavi.online.framework.sharding.dao.DaoEntity;
 import autonavi.online.framework.sharding.dao.ResultSetCallback;
 import autonavi.online.framework.sharding.dao.TableOperation;

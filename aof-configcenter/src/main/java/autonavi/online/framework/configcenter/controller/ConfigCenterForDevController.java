@@ -28,8 +28,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import autonavi.online.framework.cc.CcBaseEntity;
-import autonavi.online.framework.cc.CcBizEntity;
+import autonavi.online.framework.cc.entity.CcBaseEntity;
+import autonavi.online.framework.cc.entity.CcBizEntity;
 import autonavi.online.framework.configcenter.entity.ResultEntity;
 import autonavi.online.framework.configcenter.exception.AofException;
 import autonavi.online.framework.configcenter.exception.AofExceptionEnum;

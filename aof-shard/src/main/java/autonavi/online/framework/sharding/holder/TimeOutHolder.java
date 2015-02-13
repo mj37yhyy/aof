@@ -1,4 +1,4 @@
-package autonavi.online.framework.sharding.transaction.holder;
+package autonavi.online.framework.sharding.holder;
 
 import autonavi.online.framework.util.ConcurrentStack;
 

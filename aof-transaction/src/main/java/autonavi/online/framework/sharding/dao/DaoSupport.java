@@ -1,8 +1,8 @@
 package autonavi.online.framework.sharding.dao;
 
 import autonavi.online.framework.sharding.annotation.DaoSupportCase;
+import autonavi.online.framework.sharding.holder.TimeOutHolder;
 import autonavi.online.framework.sharding.transaction.ConnectionTransactionManage;
-import autonavi.online.framework.sharding.transaction.holder.TimeOutHolder;
 import autonavi.online.framework.sharding.transaction.holder.TransactionAttributeHolder;
 import autonavi.online.framework.sharding.transaction.holder.TransactionHolder;
 import autonavi.online.framework.sharding.transaction.holder.TransactionManagerHolder;

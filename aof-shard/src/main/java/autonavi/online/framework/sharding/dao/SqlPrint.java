@@ -3,7 +3,7 @@ package autonavi.online.framework.sharding.dao;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import autonavi.online.framework.cc.Miscellaneous;
+import autonavi.online.framework.constant.Miscellaneous;
 
 public class SqlPrint {
 	private static Logger log = LogManager.getLogger(SqlPrint.class);

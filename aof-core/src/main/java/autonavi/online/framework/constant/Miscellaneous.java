@@ -1,4 +1,4 @@
-package autonavi.online.framework.cc;
+package autonavi.online.framework.constant;
 
 /**
  * 该类包含一些重要但又不成体系的属性

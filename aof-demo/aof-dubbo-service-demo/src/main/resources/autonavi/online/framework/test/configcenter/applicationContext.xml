@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:props="http://www.autonavi.com/schema/configCenter"
+	xmlns:shard-cc="http://www.autonavi.com/schema/shardConfigCenter"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.autonavi.com/schema/configCenter
+    http://www.autonavi.com/schema/configCenter/props-cc.xsd
+    http://www.autonavi.com/schema/shardConfigCenter
+    http://www.autonavi.com/schema/shardConfigCenter/shard-cc.xsd">
+
+	<shard-cc:config>
+		<shard-cc:info ref="zkBaseConfig"></shard-cc:info>
+	</shard-cc:config>
+	<props:config>
+		<props:info ref="zkPropertieConfig"></props:info>
+	</props:config>
+
+	<bean id="zkConfig"
+		class="autonavi.online.framework.support.zookeeper.ZooKeeperProp">
+		<property name="address">
+			<value>10.19.3.158:2181,10.19.3.158:2182,10.19.3.158:2183</value>
+		</property>
+		<property name="sessionTimeout">
+			<value>1000</value>
+		</property>
+		<property name="projectName">
+			<value>demo</value>
+		</property>
+		<property name="password">
+			<value>123456</value>
+		</property>
+	</bean>
+
+	<bean id="zkBaseConfig"
+		class="autonavi.online.framework.support.zookeeper.ConfigCenterFromZooKeeper">
+		<property name="zooKeeperProp" ref="zkConfig"></property>
+	</bean>
+
+	<bean id="zkPropertieConfig"
+		class="autonavi.online.framework.support.zookeeper.GetPropertiesDataFromZooKeeper">
+		<property name="zooKeeperProp" ref="zkConfig"></property>
+	</bean>
+
+</beans>

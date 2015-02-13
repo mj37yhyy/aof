@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 
-import autonavi.online.framework.sharding.transaction.holder.TimeOutHolder;
+import autonavi.online.framework.sharding.holder.TimeOutHolder;
 import autonavi.online.framework.sharding.transaction.holder.TransactionAttributeHolder;
 import autonavi.online.framework.sharding.transaction.support.ShardingTransactionAspectSupport;
 

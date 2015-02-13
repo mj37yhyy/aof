@@ -24,7 +24,7 @@ import org.apache.commons.dbutils.handlers.MapListHandler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import autonavi.online.framework.cc.Miscellaneous;
+import autonavi.online.framework.constant.Miscellaneous;
 import autonavi.online.framework.metadata.entity.ColumnAttribute;
 import autonavi.online.framework.patch.commons.dbutils.BasicRowProcessorPatch;
 import autonavi.online.framework.sharding.dao.constant.RegularExpressions;

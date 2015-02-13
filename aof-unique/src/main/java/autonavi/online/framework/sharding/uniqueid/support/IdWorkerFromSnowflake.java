@@ -1,13 +1,13 @@
 package autonavi.online.framework.sharding.uniqueid.support;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
-import autonavi.online.framework.cc.Miscellaneous;
+import autonavi.online.framework.constant.Miscellaneous;
 import autonavi.online.framework.sharding.uniqueid.IdWorker;
 
 public class IdWorkerFromSnowflake implements IdWorker {
-	private Logger log = LogManager.getLogger(this.getClass());
+	private Log log = LogFactory.getLog(this.getClass());
 	private long workerId;
 	private long datacenterId;
 	private long sequence = 0L;

@@ -9,7 +9,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.ZooKeeper;
 
-import autonavi.online.framework.cc.CcBizEntity;
+import autonavi.online.framework.cc.entity.CcBizEntity;
 import autonavi.online.framework.property.PropertiesData;
 import autonavi.online.framework.support.zookeeper.exception.ZKExistingPropException;
 import autonavi.online.framework.zookeeper.SysProps;

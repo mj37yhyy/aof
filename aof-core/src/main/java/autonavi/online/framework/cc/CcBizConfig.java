@@ -15,7 +15,7 @@ import org.springframework.beans.factory.support.RootBeanDefinition;
 import org.springframework.core.io.support.PropertiesLoaderSupport;
 
 import autonavi.online.framework.cc.config.ConfigBiz;
-import autonavi.online.framework.cc.config.ConfigPlugInSupport;
+import autonavi.online.framework.cc.config.ScanPlugIn;
 import autonavi.online.framework.property.PropertiesData;
 
 /**
@@ -34,16 +34,9 @@ public class CcBizConfig implements BeanDefinitionRegistryPostProcessor {
 			log.info("开始扫描新框架插件");
 
 			/**
-			 * 扫描并注册插件 走启动器管道
+			 * 扫描并注册插件
 			 */
-			new ConfigPlugInSupport().initSupport(registry);
-			
-			/**
-			 * 统一进行扫描并运行后置处理器
-			 */
-			//this.scanAndRunAfter();
-			
-			
+			new ScanPlugIn().scanAndRegistryPlugIn(registry);
 
 			/**
 			 * 启动ccConfig清理器

@@ -18,6 +18,15 @@
     	http://www.autonavi.com/schema/shard
     	http://www.autonavi.com/schema/shard/aof-shard.xsd">
 
+	<context:annotation-config />
+
+	<!-- 使用spring管理DAO -->
+	<context:component-scan base-package="autonavi.online.framework.test"></context:component-scan>
+
+	<!-- 初始化配置文件 -->
+	<shard-cc:config>
+		<shard-cc:info configJson="/aof-shard.json" />
+	</shard-cc:config>
 
 	<!-- DAO管理（采用接口+XML）。你依然可以使用注解方式的DAO，但那样做可能会影响系统性能 -->
 	<shard:dao>

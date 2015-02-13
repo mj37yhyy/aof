@@ -7,8 +7,8 @@ import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 
-import autonavi.online.framework.cc.CcBaseEntity;
-import autonavi.online.framework.cc.CcDaoEntity;
+import autonavi.online.framework.cc.entity.CcBaseEntity;
+import autonavi.online.framework.cc.entity.CcDaoEntity;
 import autonavi.online.framework.sharding.dao.AbstractDaoSupport;
 import autonavi.online.framework.sharding.entry.aspect.DaoAspectProxyCreator;
 import autonavi.online.framework.sharding.entry.xml.builder.ClassGeneration;

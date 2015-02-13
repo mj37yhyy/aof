@@ -43,6 +43,11 @@
 		</dependency>
 		<dependency>
 			<groupId>com.autonavi.onlineframework</groupId>
+			<artifactId>aof-unique</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.autonavi.onlineframework</groupId>
 			<artifactId>aof-zookeeper</artifactId>
 			<version>${project.version}</version>
 		</dependency>

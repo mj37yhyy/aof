@@ -42,13 +42,14 @@
 					</plugin>
 				</plugins>
 			</build>
-			<activation>  
-				<activeByDefault>true</activeByDefault>  
-             </activation>  
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
 		</profile>
 	</profiles>
 	<modules>
 		<module>aof-core</module>
+		<module>aof-unique</module>
 		<module>aof-shard</module>
 		<module>aof-shard-spring</module>
 		<module>aof-transaction</module>

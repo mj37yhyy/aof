@@ -17,8 +17,8 @@ import org.springframework.util.xml.DomUtils;
 import org.w3c.dom.Element;
 
 import autonavi.online.framework.cc.CcBizConfig;
-import autonavi.online.framework.cc.CcBizEntity;
-import autonavi.online.framework.cc.CcEntity;
+import autonavi.online.framework.cc.entity.CcBizEntity;
+import autonavi.online.framework.cc.entity.CcEntity;
 import autonavi.online.framework.property.PropertiesData;
 import autonavi.online.framework.util.json.JsonBinder;
 

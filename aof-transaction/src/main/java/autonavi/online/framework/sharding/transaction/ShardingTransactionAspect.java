@@ -8,8 +8,8 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 
+import autonavi.online.framework.sharding.holder.TimeOutHolder;
 import autonavi.online.framework.sharding.transaction.annotation.ShardingTransactional;
-import autonavi.online.framework.sharding.transaction.holder.TimeOutHolder;
 import autonavi.online.framework.sharding.transaction.holder.TransactionAttributeHolder;
 import autonavi.online.framework.sharding.transaction.support.ShardingTransactionAspectSupport;
 

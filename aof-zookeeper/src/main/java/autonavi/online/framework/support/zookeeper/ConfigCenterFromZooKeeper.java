@@ -11,9 +11,9 @@ import org.apache.logging.log4j.Logger;
 import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.ZooKeeper;
 
-import autonavi.online.framework.cc.CcBaseEntity;
-import autonavi.online.framework.cc.CcDataSource;
 import autonavi.online.framework.cc.InitBaseConfig;
+import autonavi.online.framework.cc.entity.CcBaseEntity;
+import autonavi.online.framework.cc.entity.CcDataSource;
 import autonavi.online.framework.metadata.entity.ColumnAttribute;
 import autonavi.online.framework.sharding.index.SegmentTable;
 import autonavi.online.framework.support.zookeeper.exception.ZKExistingDataSourceKeyException;

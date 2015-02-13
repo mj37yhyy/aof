@@ -7,7 +7,7 @@ import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.core.type.classreading.MetadataReader;
 
 import autonavi.online.framework.cc.CcBaseConfig;
-import autonavi.online.framework.config.IShardSupportConfig;
+import autonavi.online.framework.plugin.ShardConfigPlugInSupport;
 import autonavi.online.framework.util.ScanAllClassHandle;
 
 public class ConfigShardPlugInSupport {
@@ -38,11 +38,11 @@ public class ConfigShardPlugInSupport {
 					log.warn(e.getMessage() + "不存在，已跳过");
 				}
 				if (clazz != null
-						&& IShardSupportConfig.class.isAssignableFrom(clazz)
+						&& ShardConfigPlugInSupport.class.isAssignableFrom(clazz)
 						&& metadataReader.getClassMetadata()
 						.getClassName().startsWith(AOF_SUPPORT_CONFIG_PACKAGE)
 						&& !clazz.isInterface()) {
-					IShardSupportConfig supportConfig = (IShardSupportConfig) clazz
+					ShardConfigPlugInSupport supportConfig = (ShardConfigPlugInSupport) clazz
 							.newInstance();
 					supportConfig.processShardSupportConfig(beanDefinitionRegistry,beanFactory);
 				}

@@ -31,7 +31,7 @@ import org.apache.commons.beanutils.PropertyUtils;
 import autonavi.online.framework.metadata.DialectUtils;
 import autonavi.online.framework.sharding.dao.constant.RegularExpressions;
 import autonavi.online.framework.sharding.dao.constant.ReservedWord;
-import autonavi.online.framework.sharding.transaction.holder.TimeOutHolder;
+import autonavi.online.framework.sharding.holder.TimeOutHolder;
 import autonavi.online.framework.sharding.uniqueid.IdWorker;
 import autonavi.online.framework.sharding.uniqueid.IdWorkerType;
 import autonavi.online.framework.sharding.uniqueid.UniqueIDFactory;

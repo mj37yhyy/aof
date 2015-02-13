@@ -9,6 +9,8 @@ import javax.sql.DataSource;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import autonavi.online.framework.cc.entity.CcBaseEntity;
+import autonavi.online.framework.cc.entity.CcDataSource;
 import autonavi.online.framework.sharding.dao.ds.LoadBalancingDataSource;
 import autonavi.online.framework.sharding.dao.ds.strategy.LoadBalancingStrategy;
 import autonavi.online.framework.sharding.dao.ds.strategy.LoadBalancingStrategyFactory;

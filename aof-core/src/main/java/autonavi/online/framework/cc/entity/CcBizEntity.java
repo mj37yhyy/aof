@@ -1,4 +1,4 @@
-package autonavi.online.framework.cc;
+package autonavi.online.framework.cc.entity;
 /**
  * Biz封装类
  * @author yaming.xu

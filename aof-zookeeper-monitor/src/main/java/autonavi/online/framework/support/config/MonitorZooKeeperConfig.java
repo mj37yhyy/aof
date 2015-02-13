@@ -9,23 +9,18 @@ import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.RootBeanDefinition;
 import org.springframework.core.type.classreading.MetadataReader;
 
-import autonavi.online.framework.cc.config.ConfigLocalPorpFile;
-import autonavi.online.framework.config.ISupportConfig;
 import autonavi.online.framework.monitor.handler.MonitorHandler;
+import autonavi.online.framework.plugin.ConfigPlugInSupport;
 import autonavi.online.framework.support.zookeeper.MonitorZooKeeper;
 import autonavi.online.framework.support.zookeeper.ZooKeeperProp;
 import autonavi.online.framework.util.ScanAllClass;
 import autonavi.online.framework.util.ScanAllClassHandle;
 
-public class MonitorZooKeeperConfig implements ISupportConfig {
+public class MonitorZooKeeperConfig implements ConfigPlugInSupport {
 
 	@Override
 	public void processSupportConfig(
 			final BeanDefinitionRegistry beanDefinitionRegistry,Object ...objects) throws Exception {
-		/**
-		 * 读取本地的MyId文件
-		 */
-		new ConfigLocalPorpFile().readMyId();
 		RootBeanDefinition monitorZooKeeperBeanDefinition = new RootBeanDefinition(MonitorZooKeeper.class);
 		String[] beanName=beanDefinitionRegistry.getBeanDefinitionNames();
 		for(String _beanName:beanName){

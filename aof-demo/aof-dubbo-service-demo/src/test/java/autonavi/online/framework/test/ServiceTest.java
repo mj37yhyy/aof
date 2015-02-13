@@ -7,7 +7,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {
-		"classpath:autonavi/online/framework/test/service/applicationContext.xml",
 		"classpath:autonavi/online/framework/test/service/applicationContext-tx.xml",
 		"classpath:autonavi/online/framework/test/service/provider.xml",
 		"classpath:autonavi/online/framework/test/crud/applicationContext.xml" })

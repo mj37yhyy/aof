@@ -51,9 +51,7 @@ public class IdWorker {
             if (sequence == 0) {
                 timestamp = tilNextMillis(lastTimestamp);
             }
-        	System.out.println("aaaa=sequence="+sequence+";");
         } else {
-        	System.out.println("bbbb");
             sequence = 0L;
         }
  

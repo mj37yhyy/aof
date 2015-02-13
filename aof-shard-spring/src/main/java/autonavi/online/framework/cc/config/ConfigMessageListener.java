@@ -12,7 +12,7 @@ import org.springframework.beans.factory.support.ManagedList;
 import org.springframework.beans.factory.support.RootBeanDefinition;
 import org.springframework.core.type.classreading.MetadataReader;
 
-import autonavi.online.framework.cc.Miscellaneous;
+import autonavi.online.framework.constant.Miscellaneous;
 import autonavi.online.framework.message.MessageListener;
 import autonavi.online.framework.message.annotation.message.MessageListenerHandler;
 import autonavi.online.framework.util.ScanAllClassHandle;

@@ -15,9 +15,9 @@ import org.springframework.util.xml.DomUtils;
 import org.w3c.dom.Element;
 
 import autonavi.online.framework.cc.CcBaseConfig;
-import autonavi.online.framework.cc.CcBaseEntity;
-import autonavi.online.framework.cc.CcEntity;
 import autonavi.online.framework.cc.InitBaseConfig;
+import autonavi.online.framework.cc.entity.CcBaseEntity;
+import autonavi.online.framework.cc.entity.CcEntity;
 import autonavi.online.framework.sharding.exception.ShardSpringException;
 import autonavi.online.framework.util.json.JsonBinder;
 

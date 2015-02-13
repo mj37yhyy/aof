@@ -11,7 +11,7 @@ import org.apache.zookeeper.Watcher;
 import org.apache.zookeeper.Watcher.Event.EventType;
 import org.apache.zookeeper.ZooKeeper;
 
-import autonavi.online.framework.cc.Miscellaneous;
+import autonavi.online.framework.constant.Miscellaneous;
 import autonavi.online.framework.monitor.constant.MonitorConstant;
 import autonavi.online.framework.monitor.handler.MonitorHandler;
 import autonavi.online.framework.support.zookeeper.exception.SetZooKeeperNodeException;

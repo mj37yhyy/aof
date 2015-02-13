@@ -26,11 +26,11 @@ import org.springframework.beans.factory.support.ManagedSet;
 import org.springframework.beans.factory.support.RootBeanDefinition;
 import org.springframework.core.type.classreading.MetadataReader;
 
-import autonavi.online.framework.cc.CcBaseEntity;
 import autonavi.online.framework.cc.CcConfigUtils;
-import autonavi.online.framework.cc.CcDataSource;
 import autonavi.online.framework.cc.InitBaseConfig;
-import autonavi.online.framework.cc.Miscellaneous;
+import autonavi.online.framework.cc.entity.CcBaseEntity;
+import autonavi.online.framework.cc.entity.CcDataSource;
+import autonavi.online.framework.constant.Miscellaneous;
 import autonavi.online.framework.metadata.CreateTable;
 import autonavi.online.framework.metadata.DialectUtils;
 import autonavi.online.framework.metadata.TableGenerator;

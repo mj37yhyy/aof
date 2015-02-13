@@ -25,16 +25,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import autonavi.online.framework.cc.CcBaseEntity;
-import autonavi.online.framework.cc.CcBizEntity;
-import autonavi.online.framework.cc.CcDataSource;
-import autonavi.online.framework.cc.Miscellaneous;
+import autonavi.online.framework.cc.entity.CcBaseEntity;
+import autonavi.online.framework.cc.entity.CcBizEntity;
+import autonavi.online.framework.cc.entity.CcDataSource;
 import autonavi.online.framework.configcenter.commons.AppNode;
 import autonavi.online.framework.configcenter.entity.ResultEntity;
 import autonavi.online.framework.configcenter.exception.AofException;
 import autonavi.online.framework.configcenter.service.ZookeeperService;
 import autonavi.online.framework.configcenter.util.AofCcProps;
 import autonavi.online.framework.configcenter.util.ZooKeeperClientHolder;
+import autonavi.online.framework.constant.Miscellaneous;
 import autonavi.online.framework.util.json.JsonBinder;
 import autonavi.online.framework.zookeeper.SysProps;
 
