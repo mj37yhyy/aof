@@ -13,37 +13,33 @@ public final class CcBaseEntity {
 	private Integer shardIndex;
 	private Map<String, List<ColumnAttribute>> indexTableMap;
 	private List<SegmentTable> segmentTables;
-	private Map<String,CcDataSource> realDataSources;
+	private Map<String, CcDataSource> realDataSources;
 	private List<CcDaoEntity> daos;
-
+	//private String generateUniqueHandler;
 
 	/**
 	 * 默认构造函数 必须存在 JSON转化使用
 	 */
-	
-	public CcBaseEntity(){
-		
+
+	public CcBaseEntity() {
+
 	}
-	
 
 	public CcBaseEntity(boolean... isDefalut) {
-		//在某些情况下需要初始化
+		// 在某些情况下需要初始化
 		if (isDefalut.length > 0 && isDefalut[0]) {
 			dataSources = new HashMap<Integer, CcDataSource>();
 			shardIndex = -1;
 			indexTableMap = new HashMap<String, List<ColumnAttribute>>();
 			segmentTables = new ArrayList<SegmentTable>();
-			realDataSources=new HashMap<String, CcDataSource>();
-			daos=new ArrayList<CcDaoEntity>();
+			realDataSources = new HashMap<String, CcDataSource>();
+			daos = new ArrayList<CcDaoEntity>();
 		}
 	}
-	
-	
-	
+
 	public List<CcDaoEntity> getDaos() {
 		return daos;
 	}
-
 
 	public void setDaos(List<CcDaoEntity> daos) {
 		this.daos = daos;
@@ -53,11 +49,9 @@ public final class CcBaseEntity {
 		return realDataSources;
 	}
 
-
 	public void setRealDataSources(Map<String, CcDataSource> realDataSources) {
 		this.realDataSources = realDataSources;
 	}
-
 
 	public Map<Integer, CcDataSource> getDataSources() {
 		return dataSources;
@@ -91,4 +85,13 @@ public final class CcBaseEntity {
 	public void setSegmentTables(List<SegmentTable> segmentTables) {
 		this.segmentTables = segmentTables;
 	}
+
+	/*public String getGenerateUniqueHandler() {
+		return generateUniqueHandler;
+	}
+
+	public void setGenerateUniqueHandler(String generateUniqueHandler) {
+		this.generateUniqueHandler = generateUniqueHandler;
+	}*/
+
 }

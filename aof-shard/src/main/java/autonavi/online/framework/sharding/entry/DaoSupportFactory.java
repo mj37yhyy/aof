@@ -17,6 +17,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import autonavi.online.framework.cc.config.ConfigMyidFile;
 import autonavi.online.framework.cc.entity.CcBaseEntity;
 import autonavi.online.framework.cc.entity.CcDataSource;
 import autonavi.online.framework.constant.Miscellaneous;
@@ -46,6 +47,8 @@ import autonavi.online.framework.sharding.index.CreateIndexTables;
 import autonavi.online.framework.sharding.index.SegmentTable;
 import autonavi.online.framework.sharding.index.ShardingIndex;
 import autonavi.online.framework.sharding.transaction.manager.DynamicTransactionManager;
+import autonavi.online.framework.sharding.uniqueid.IdWorker;
+import autonavi.online.framework.sharding.uniqueid.UniqueIDHolder;
 import autonavi.online.framework.support.hibernate.HibernateUtils;
 import autonavi.online.framework.util.BeanUtils;
 import autonavi.online.framework.util.classreading.ClassMetadata;
@@ -80,6 +83,16 @@ public class DaoSupportFactory {
 			AbstractDataSourceRoute userDataSourceRoute,
 			AbstractDaoSupport userDaoSupport) throws Exception {
 
+		/**
+		 * 主键生成器
+		 */
+		/*if (ccBaseEntity.getGenerateUniqueHandler() != null
+				&& !ccBaseEntity.getGenerateUniqueHandler().isEmpty())
+			UniqueIDHolder.setIdWorker((IdWorker) this.getClass()
+					.getClassLoader()
+					.loadClass(ccBaseEntity.getGenerateUniqueHandler())
+					.newInstance());*/
+
 		AbstractDataSourceRoute dataSourceRoute = new DefaultDataSourceRoute();// 数据源路由
 		if (userDataSourceRoute != null)
 			dataSourceRoute = userDataSourceRoute;
@@ -97,7 +110,7 @@ public class DaoSupportFactory {
 		/**
 		 * 读取myid文件
 		 */
-		this.readMyId();
+		new ConfigMyidFile().readMyId();
 
 		/**
 		 * 初始化分片策略
@@ -110,15 +123,13 @@ public class DaoSupportFactory {
 		Map<Integer, DataSource> dataSources = this
 				.initDataSources(ccBaseEntity);
 
-		
 		/**
 		 * 动态数据源
 		 */
 		dynamicDataSource
-		.setDynamicTransactionManager(dynamicTransactionManager);// 事管管理器
+				.setDynamicTransactionManager(dynamicTransactionManager);// 事务管理器
 		dynamicDataSource.setTargetDataSources(dataSources);// 数据源
 		dynamicDataSource.setIndexKey(ccBaseEntity.getShardIndex());// 索引片ID
-		
 
 		/**
 		 * 动态数据源插入路由
@@ -139,8 +150,7 @@ public class DaoSupportFactory {
 		/**
 		 * 分表设置
 		 */
-		List<SegmentTable> segmentTables = this
-				.initSegmentTables(ccBaseEntity);
+		List<SegmentTable> segmentTables = this.initSegmentTables(ccBaseEntity);
 		dataSourceRoute.setSegmentTables(segmentTables);
 
 		/**
@@ -181,14 +191,15 @@ public class DaoSupportFactory {
 	 * @return
 	 * @throws Exception
 	 */
-	private Map<Integer, DataSource> initDataSources(
-			CcBaseEntity ccBaseEntity) throws Exception {
+	private Map<Integer, DataSource> initDataSources(CcBaseEntity ccBaseEntity)
+			throws Exception {
 		Map<Integer, DataSource> dataSources = new HashMap<Integer, DataSource>();
 		Map<String, DataSource> realDataSources = new HashMap<String, DataSource>();// 真实数据源
 
 		// 先得到真实数源
 		for (String dsKey : ccBaseEntity.getRealDataSources().keySet()) {
-			CcDataSource ccDataSource=ccBaseEntity.getRealDataSources().get(dsKey);
+			CcDataSource ccDataSource = ccBaseEntity.getRealDataSources().get(
+					dsKey);
 			// 通过工具得到真实数据源
 			DataSource ds = (DataSource) BeanUtils.generateObject(
 					ccDataSource.getBeanClass(), ccDataSource.getProps());
@@ -201,15 +212,17 @@ public class DaoSupportFactory {
 
 		// 负载数据源
 		for (Integer proxyDsKey : ccBaseEntity.getDataSources().keySet()) {
-			CcDataSource ccDataSource=ccBaseEntity.getDataSources().get(proxyDsKey);
+			CcDataSource ccDataSource = ccBaseEntity.getDataSources().get(
+					proxyDsKey);
 			LoadBalancingDataSource lbDataSource = new LoadBalancingDataSource();
-			String strategyName = (String) ccDataSource.getProps()
-					.get("strategyName");
+			String strategyName = (String) ccDataSource.getProps().get(
+					"strategyName");
 			if (strategyName == null || strategyName.length() == 0) {
 				throw new RuntimeException("代理数据源分片策略名为空或者长度为零");
 			}
 			@SuppressWarnings("unchecked")
-			List<String> realDss = (List<String>) ccDataSource.getProps().get("realDss");
+			List<String> realDss = (List<String>) ccDataSource.getProps().get(
+					"realDss");
 			if (realDss == null || realDss.size() == 0) {
 				throw new RuntimeException("代理数据源中真实数据源配置为空");
 			}
@@ -226,8 +239,8 @@ public class DaoSupportFactory {
 					lbDataSource.addDataSource(dsName,
 							realDataSources.get(dsName));
 				} else {
-					throw new RuntimeException("数据源["
-							+ dsName.split("\\?")[0] + "] 在真实数据源中无法找到");
+					throw new RuntimeException("数据源[" + dsName.split("\\?")[0]
+							+ "] 在真实数据源中无法找到");
 				}
 
 			}
@@ -258,7 +271,8 @@ public class DaoSupportFactory {
 		DataSource shardIndexndexDataSource = dataSources.get(ccBaseEntity
 				.getShardIndex());// 索引片数据源
 
-		Map<String, List<ColumnAttribute>> indexTables =ccBaseEntity.getIndexTableMap();
+		Map<String, List<ColumnAttribute>> indexTables = ccBaseEntity
+				.getIndexTableMap();
 		ShardingIndex shardingIndex = new ShardingIndex();// 分片索引
 		shardingIndex.setCache("true");
 		shardingIndex.setIndex(shardIndex);// 索引片ID
@@ -305,42 +319,13 @@ public class DaoSupportFactory {
 			try {
 				json = IOUtils.toString(is);
 			} catch (IOException e) {
-				log.error("读取本地属性文件错误，启动失败");
-				System.exit(0);
+				log.warn("读取本地属性文件错误，将使用默认配置");
 			} finally {
 				IOUtils.closeQuietly(is);
 			}
 			JsonBinder binder = JsonBinder.buildNonDefaultBinder();
 			binder.setDateFormat("yyyy-MM-dd HH:mm:ss");
 			binder.fromJson(json, Miscellaneous.class);// 将json文件中的属性写入类中
-		}
-	}
-
-	/**
-	 * 读取myid文件
-	 */
-	private void readMyId() {
-		int myId = 0;
-		InputStream is = getClass().getResourceAsStream("/myid");
-		if (is != null) {
-			try {
-				myId = Integer.valueOf(IOUtils.toString(is));
-			} catch (IOException e) {
-				log.error("读取myid文件错误，启动失败");
-				System.exit(0);
-			} catch (NumberFormatException e) {
-				log.error("读取myid的内容不是数字，启动失败");
-				System.exit(0);
-			} finally {
-				IOUtils.closeQuietly(is);
-			}
-		} else {
-			log.error("myid文件不存在，启动失败");
-			System.exit(0);
-		}
-		if (!Miscellaneous.setMyid(myId)) {
-			log.error("myid的内容必须在1-32之间，启动失败");
-			System.exit(0);
 		}
 	}
 
@@ -533,9 +518,8 @@ public class DaoSupportFactory {
 	 * @param ccBaseEntity
 	 * @return
 	 */
-	private List<SegmentTable> initSegmentTables(
-			CcBaseEntity ccBaseEntity) {
-	
+	private List<SegmentTable> initSegmentTables(CcBaseEntity ccBaseEntity) {
+
 		return ccBaseEntity.getSegmentTables();
 	}
 
@@ -694,8 +678,8 @@ public class DaoSupportFactory {
 	 */
 	public AbstractDaoSupport getDaoSupport(CcBaseEntity ccBaseEntity,
 			AbstractDataSourceRoute userDataSourceRoute) throws Exception {
-		return this.getDaoSupport(ccBaseEntity, null, userDataSourceRoute,
-				null);
+		return this
+				.getDaoSupport(ccBaseEntity, null, userDataSourceRoute, null);
 	}
 
 	/**

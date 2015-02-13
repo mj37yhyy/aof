@@ -4,8 +4,6 @@ import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.core.type.classreading.MetadataReader;
 
 import autonavi.online.framework.cc.config.ConfigContextHolder;
-import autonavi.online.framework.cc.config.ConfigLoadBalancingStrategy;
-import autonavi.online.framework.cc.config.ConfigLocalPorpFile;
 import autonavi.online.framework.cc.config.ConfigMessageListener;
 import autonavi.online.framework.cc.config.ConfigShardAndDS;
 import autonavi.online.framework.cc.config.ScanPipelineAfter;
@@ -68,22 +66,9 @@ public class ShardingConfig {
 		initShardStartInfo();
 
 		/**
-		 * 读取本地属性
-		 */
-		new ConfigLocalPorpFile().readLocalPorpFile();
-		
-		
-		/**
-		 * 扫描负载策略实现类 不通过管道 直接扫描
-		 */
-		new ConfigLoadBalancingStrategy().initStrategyInstance();
-
-		/**
 		 * 启动核心配置
 		 */
 		this.daoSupport=new ConfigShardAndDS().initShard(initBaseConfig, registry,shardInitEntity);
-
-		
 
 		/**
 		 * 启动消息监听

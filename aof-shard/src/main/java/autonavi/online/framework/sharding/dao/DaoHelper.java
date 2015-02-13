@@ -7,16 +7,15 @@ import java.util.concurrent.CopyOnWriteArraySet;
 import autonavi.online.framework.sharding.index.ShardingHandle;
 import autonavi.online.framework.sharding.index.ShardingHandleSupport;
 import autonavi.online.framework.sharding.uniqueid.IdWorker;
-import autonavi.online.framework.sharding.uniqueid.IdWorkerType;
-import autonavi.online.framework.sharding.uniqueid.UniqueIDFactory;
+import autonavi.online.framework.sharding.uniqueid.UniqueIDHolder;
 
 public class DaoHelper {
 
 	private static final ThreadLocal<Long> countHolder = new ThreadLocal<Long>();
 	private static final ThreadLocal<Long> primaryKeyHolder = new ThreadLocal<Long>();
 	private static final ThreadLocal<Long[]> primaryKeysHolder = new ThreadLocal<Long[]>();
-	private static final IdWorker idWorker = UniqueIDFactory
-			.getIdWorker(IdWorkerType.snowflake);
+	private static final IdWorker idWorker = UniqueIDHolder
+			.getIdWorker();
 	private static final Random random = new Random();
 
 	public static Long getCount() {

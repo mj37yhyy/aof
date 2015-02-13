@@ -8,6 +8,7 @@
 	</parent>
 	<artifactId>aof-unique</artifactId>
 	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<spring.version>3.0.7.RELEASE</spring.version>
 		<commons-logging.version>1.2</commons-logging.version>
 		<commons-io.version>2.4</commons-io.version>

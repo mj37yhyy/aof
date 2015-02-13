@@ -33,8 +33,7 @@ import autonavi.online.framework.sharding.dao.constant.RegularExpressions;
 import autonavi.online.framework.sharding.dao.constant.ReservedWord;
 import autonavi.online.framework.sharding.holder.TimeOutHolder;
 import autonavi.online.framework.sharding.uniqueid.IdWorker;
-import autonavi.online.framework.sharding.uniqueid.IdWorkerType;
-import autonavi.online.framework.sharding.uniqueid.UniqueIDFactory;
+import autonavi.online.framework.sharding.uniqueid.UniqueIDHolder;
 import autonavi.online.framework.util.StopWatchLogger;
 
 public class NamedParameterStatement {
@@ -172,7 +171,8 @@ public class NamedParameterStatement {
 						try {
 							replacement = String.valueOf(obj);
 						} catch (Exception e2) {
-							throw new RuntimeException("要替换的参数[" + param + "] 无法转换为String。");
+							throw new RuntimeException("要替换的参数[" + param
+									+ "] 无法转换为String。");
 						}
 					}
 				}
@@ -384,8 +384,7 @@ public class NamedParameterStatement {
 
 	private final Map indexMap;
 
-	private final IdWorker idWorker = UniqueIDFactory
-			.getIdWorker(IdWorkerType.snowflake);
+	private final IdWorker idWorker = UniqueIDHolder.getIdWorker();
 
 	public String getParsedQuery() {
 		return parsedQuery;

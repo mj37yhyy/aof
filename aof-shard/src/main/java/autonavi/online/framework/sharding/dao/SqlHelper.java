@@ -39,8 +39,7 @@ import autonavi.online.framework.sharding.index.ShardingHandle;
 import autonavi.online.framework.sharding.index.ShardingIndexEntity;
 import autonavi.online.framework.sharding.index.ShardingSupportType;
 import autonavi.online.framework.sharding.uniqueid.IdWorker;
-import autonavi.online.framework.sharding.uniqueid.IdWorkerType;
-import autonavi.online.framework.sharding.uniqueid.UniqueIDFactory;
+import autonavi.online.framework.sharding.uniqueid.UniqueIDHolder;
 import autonavi.online.framework.util.bean.PropertyUtils;
 
 /**
@@ -982,8 +981,7 @@ public class SqlHelper {
 				.getShardingIndexEntity(indexTableName, new Object[] {},
 						indexColumnValue, singleDataSource, handle, "")
 				.getShard_id();
-		return UniqueIDFactory.getIdWorker(IdWorkerType.snowflake)
-				.nextId(dsKey);
+		return idWorker.nextId(dsKey);
 	}
 
 	protected void openIndexCache() throws Exception {
@@ -995,8 +993,7 @@ public class SqlHelper {
 	}
 
 	private Logger log = LogManager.getLogger(getClass());
-	private final IdWorker idWorker = UniqueIDFactory
-			.getIdWorker(IdWorkerType.snowflake);
+	private final IdWorker idWorker = UniqueIDHolder.getIdWorker();
 	private AbstractDataSourceRoute dataSourceRoute = null;
 
 	public void setDataSourceRoute(AbstractDataSourceRoute dataSourceRoute) {

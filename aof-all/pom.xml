@@ -25,6 +25,11 @@
 		</dependency>
 		<dependency>
 			<groupId>com.autonavi.onlineframework</groupId>
+			<artifactId>aof-unique</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.autonavi.onlineframework</groupId>
 			<artifactId>aof-shard</artifactId>
 			<version>${project.version}</version>
 		</dependency>
@@ -166,6 +171,7 @@
 							<artifactSet>
 								<includes>
 									<include>com.autonavi.onlineframework:aof-core</include>
+									<include>com.autonavi.onlineframework:aof-unique</include>
 									<include>com.autonavi.onlineframework:aof-shard</include>
 									<include>com.autonavi.onlineframework:aof-shard-spring</include>
 									<include>com.autonavi.onlineframework:aof-web</include>

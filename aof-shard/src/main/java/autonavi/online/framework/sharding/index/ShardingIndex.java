@@ -23,8 +23,7 @@ import autonavi.online.framework.sharding.dao.DynamicDataSource;
 import autonavi.online.framework.sharding.dao.SqlPrint;
 import autonavi.online.framework.sharding.dao.exception.DBTableNotFoundException;
 import autonavi.online.framework.sharding.uniqueid.IdWorker;
-import autonavi.online.framework.sharding.uniqueid.IdWorkerType;
-import autonavi.online.framework.sharding.uniqueid.UniqueIDFactory;
+import autonavi.online.framework.sharding.uniqueid.UniqueIDHolder;
 import autonavi.online.framework.util.StopWatchLogger;
 
 public class ShardingIndex {
@@ -454,8 +453,7 @@ public class ShardingIndex {
 
 	private Logger log = LogManager.getLogger(this.getClass());
 	private DataSource dataSource = null;
-	private final IdWorker idWorker = UniqueIDFactory
-			.getIdWorker(IdWorkerType.snowflake);
+	private final IdWorker idWorker = UniqueIDHolder.getIdWorker();
 	// private LRULinkedHashMap<String, Long> LRUCache = null;
 	private EhcacheUtils shardingIndexCacheUtils = null;
 	private EhcacheUtils segmentTableNameCacheUtils = null;

@@ -53,7 +53,7 @@ import java.nio.channels.SocketChannel;
 import java.util.Iterator;
 import java.util.LinkedList;
 
-import autonavi.online.framework.sharding.dao.exception.PingException;
+import autonavi.online.framework.exception.PingException;
 
 public class Ping {
 
