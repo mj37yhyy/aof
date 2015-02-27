@@ -6,6 +6,12 @@ import java.util.concurrent.ConcurrentHashMap;
 import javax.sql.DataSource;
 
 public class ConnectionHolder {
+	
+	public static void cleanAll(){
+		cleanAutoCommitHolder();
+		cleanConnectionHolder();
+		cleanShardConnectionHolder();
+	}
 
 	/**
 	 * 单连接持有者

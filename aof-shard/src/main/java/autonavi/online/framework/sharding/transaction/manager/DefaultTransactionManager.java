@@ -3,6 +3,9 @@ package autonavi.online.framework.sharding.transaction.manager;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import autonavi.online.framework.sharding.holder.ConnectionHolder;
 
 /**
@@ -12,6 +15,7 @@ import autonavi.online.framework.sharding.holder.ConnectionHolder;
  * 
  */
 public class DefaultTransactionManager {
+	private static Logger logger = LogManager.getLogger(DefaultTransactionManager.class);
 
 	/**
 	 * 开始事务
@@ -27,9 +31,14 @@ public class DefaultTransactionManager {
 	 */
 	public static void commit() throws SQLException {
 		if (!ConnectionHolder.isAutoCommit()) {
+			if(ConnectionHolder.getShardConnectionHolder().size()==0){
+				if(logger.isWarnEnabled())
+				    logger.warn("已经使用Spring事务进行了控制导致简单事务无效或者简单事务已经完成");
+				return;
+			}
 			for (Connection conn : ConnectionHolder.getShardConnectionHolder()
 					.values()) {
-				if (conn != null && !conn.isClosed()) {
+				if (conn != null && !conn.isClosed()&&!conn.getAutoCommit()) {
 					conn.commit();
 				}
 			}
@@ -43,9 +52,14 @@ public class DefaultTransactionManager {
 	 */
 	public static void rollback() throws SQLException {
 		if (!ConnectionHolder.isAutoCommit()) {
+			if(ConnectionHolder.getShardConnectionHolder().size()==0){
+				if(logger.isWarnEnabled())
+				    logger.warn("已经使用Spring事务进行了控制导致简单事务无效或者简单事务已经完成");
+				return;
+			}
 			for (Connection conn : ConnectionHolder.getShardConnectionHolder()
 					.values()) {
-				if (conn != null && !conn.isClosed()) {
+				if (conn != null && !conn.isClosed()&&!conn.getAutoCommit()) {
 					conn.rollback();
 				}
 			}
@@ -59,6 +73,12 @@ public class DefaultTransactionManager {
 	 */
 	public static void release() throws SQLException {
 		if (!ConnectionHolder.isAutoCommit()) {
+			if(ConnectionHolder.getShardConnectionHolder().size()==0){
+				if(logger.isWarnEnabled())
+				    logger.warn("已经使用Spring事务进行了控制导致简单事务无效或者简单事务已经完成");
+				ConnectionHolder.cleanAutoCommitHolder();
+				return;
+			}
 			for (Connection conn : ConnectionHolder.getShardConnectionHolder()
 					.values()) {
 				if (conn != null && !conn.isClosed()) {
@@ -66,6 +86,7 @@ public class DefaultTransactionManager {
 				}
 			}
 			ConnectionHolder.cleanAutoCommitHolder();
+			ConnectionHolder.cleanShardConnectionHolder();
 		}
 	}
 
