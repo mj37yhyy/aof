@@ -17,7 +17,8 @@
      
     <bean id="zooKeeperProp" class="autonavi.online.framework.support.zookeeper.ZooKeeperProp">
 	<property name="address">
-	<value>10.19.3.158:2181,10.19.3.158:2182,10.19.3.158:2183</value>
+<!-- 	<value>10.19.3.158:2181,10.19.3.158:2182,10.19.3.158:2183</value> -->
+		<value>10.19.2.10:2181,10.19.2.10:2182,10.19.2.10:2183</value> 
 	</property>
 	<property name="sessionTimeout">
 	<value>1000</value>

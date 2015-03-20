@@ -1,5 +1,7 @@
 package autonavi.online.framework.test;
 
+import java.io.File;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +41,9 @@ public class ClientTest {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
+		File file = new File("/app");
+		file.toURI().toURL();
 
 	}
 }

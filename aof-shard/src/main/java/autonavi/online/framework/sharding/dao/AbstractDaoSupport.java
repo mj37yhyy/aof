@@ -125,7 +125,7 @@ public abstract class AbstractDaoSupport {
 						|| tableOperation == TableOperation.Insert
 						|| tableOperation == TableOperation.Delete) {
 					// 如果是插入、更新、删除，返回更新条数
-					sqlHelper.checkSqlValid(daoEntity.getSql());// 校验SQL
+					//sqlHelper.checkSqlValid(daoEntity.getSql());// 校验SQL
 					int count = 0;
 					int[] counts = null;
 					// 注意 批量返回的数字有时候会不准 如insert和驱动 连接参数都有关系

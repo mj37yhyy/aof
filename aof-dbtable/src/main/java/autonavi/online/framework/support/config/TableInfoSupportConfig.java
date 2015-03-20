@@ -5,11 +5,11 @@ import org.springframework.beans.factory.config.RuntimeBeanReference;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.RootBeanDefinition;
 
-import autonavi.online.framework.config.ISupportConfig;
+import autonavi.online.framework.plugin.ConfigPlugInSupport;
 import autonavi.online.framework.sharding.dao.AbstractDaoSupport;
 import autonavi.online.framework.support.table.aspect.TableInfoAspect;
 
-public class TableInfoSupportConfig implements ISupportConfig {
+public class TableInfoSupportConfig implements ConfigPlugInSupport {
 	private final String ASPECT="AOF_TABLEINFO_ASPECT";
 	@Override
 	public void processSupportConfig(

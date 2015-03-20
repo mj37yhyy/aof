@@ -62,4 +62,16 @@
 		<module>aof-demo</module>
 		<module>aof-all</module>
 	</modules>
+	<distributionManagement>
+		<snapshotRepository>
+			<id>snapshots</id>
+			<name>aof</name>
+			<url>http://10.19.2.9:8081/nexus/content/repositories/snapshots/</url>
+		</snapshotRepository>
+		<repository>
+			<id>release</id>
+			<name>aof</name>
+			<url>http://10.19.2.9:8081/nexus/content/repositories/releases/</url>
+		</repository>
+	</distributionManagement>
 </project>

@@ -33,6 +33,12 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
     <script type="text/javascript">
+    
+    function dbMonitorNode(){
+    	window.parent.$("#main").attr("src","<%=path%>/monitor/dbmonitor_node.jsp");
+    }
+    
+    
     function monitorNode(){
     	window.parent.$("#main").attr("src","monitor_node.jsp");
     }
@@ -66,7 +72,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
           <ul class="nav navbar-nav navbar-right">
           <%if((Boolean)request.getSession().getAttribute(AofCcProps.SESSION_FLAG_RUN)){%>
             <li><a href="javascript:monitorNode()">节点监控</a></li>
+            <li><a href="javascript:dbMonitorNode()">数据库监控</a></li>
             <%} %>
+            
             <li><a href="javascript:exit()">注销</a></li>
             <li><a href="http://10.19.2.9/publish/user.html" target="_blank">帮助</a></li>
           </ul>

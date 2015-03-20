@@ -138,7 +138,10 @@ public class TransactionAttribute {
 
 
 	private int getRollBackDepth(Class<?> exceptionClass, int depth) {
-		if(this.getNoRollbackForClassName().length==0&&this.getNoRollbackFor().length==0){
+//		if(this.getNoRollbackForClassName().length==0&&this.getNoRollbackFor().length==0){
+//			return -2;
+//		}
+		if(this.getRollbackForClassName().length==0&&this.getRollbackFor().length==0){
 			return -2;
 		}
 		for(String clazz:this.getRollbackForClassName()){
