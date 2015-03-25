@@ -59,6 +59,11 @@
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
+			<groupId>com.autonavi.onlineframework</groupId>
+			<artifactId>aof-unique</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-core</artifactId>
 			<version>${spring.version}</version>
@@ -178,6 +183,7 @@
 									<include>com.autonavi.onlineframework:aof-transaction</include>
 									<include>com.autonavi.onlineframework:aof-zookeeper</include>
 									<include>com.autonavi.onlineframework:aof-zookeeper-monitor</include>
+									<include>com.autonavi.onlineframework:aof-unique</include>
 								</includes>
 							</artifactSet>
 							<transformers>

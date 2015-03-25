@@ -22,7 +22,7 @@
 		<jackson.version>2.4.1</jackson.version>
 		<kryo.version>2.24.0</kryo.version>
 		<commons-beanutils.version>1.9.2</commons-beanutils.version>
-		<spring.version>3.0.7.RELEASE</spring.version>
+		<spring.version>4.0.3.RELEASE</spring.version>
 		<aspectj.version>1.8.5</aspectj.version>
 		<commons-net.version>3.3</commons-net.version>
 		<commons-io.version>2.4</commons-io.version>
