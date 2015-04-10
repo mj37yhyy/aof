@@ -29,6 +29,7 @@
 			<groupId>com.autonavi.onlineframework</groupId>
 			<artifactId>aof-core</artifactId>
 			<version>${project.version}</version>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.github.sgroschupf</groupId>
