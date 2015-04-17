@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns="http://www.autonavi.com/schema/shardConfigCenter"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.autonavi.com/schema/shardConfigCenter"
+	elementFormDefault="qualified" attributeFormDefault="unqualified">
+
+	<xsd:element name="config">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="info" minOccurs="0" maxOccurs="1"></xsd:element>
+			</xsd:sequence>
+			<xsd:attribute name="id" type="xsd:string" default="ccShardConfig">
+			</xsd:attribute>
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:element name="info">
+		<xsd:complexType>
+			<xsd:attribute name="ref" type="xsd:string">
+			</xsd:attribute>
+			<xsd:attribute name="configJson" type="xsd:string">
+			</xsd:attribute>
+		</xsd:complexType>
+	</xsd:element>
+</xsd:schema>

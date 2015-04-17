@@ -1,0 +1,2 @@
+http\://www.autonavi.com/schema/shard=autonavi.online.framework.config.ShardNamespaceHandler
+http\://www.autonavi.com/schema/shardConfigCenter=autonavi.online.framework.config.ShardConfigCenterNamespaceHandler

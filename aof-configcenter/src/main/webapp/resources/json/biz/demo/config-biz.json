@@ -1,0 +1,4 @@
+{
+    "id": "123",
+    "pushConfig.url": "http://10.13.5.43:28080/pushservice/push"
+}

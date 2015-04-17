@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.autonavi.com/schema/tx"
+	xmlns:shard="http://www.autonavi.com/schema/shard"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans   
+        http://www.springframework.org/schema/beans/spring-beans-3.0.xsd  
+        http://www.springframework.org/schema/context  
+        http://www.springframework.org/schema/context/spring-context-3.0.xsd  
+        http://www.springframework.org/schema/aop   
+        http://www.springframework.org/schema/aop/spring-aop-3.0.xsd 
+        http://www.autonavi.com/schema/tx
+		http://www.autonavi.com/schema/tx/aof-tx.xsd">
+
+
+	<!-- 如果使用JTA数据源，需要配置jta事务管理器，并set入路由管理器中 -->
+	<!-- <bean id="jtaTransactionManager" class="org.springframework.transaction.jta.JtaTransactionManager"> 
+		<property name="transactionManager"> <bean class="com.atomikos.icatch.jta.UserTransactionManager" 
+		init-method="init" destroy-method="close"> <property name="forceShutdown" 
+		value="true"/> </bean> </property> <property name="userTransaction"> <bean 
+		class="com.atomikos.icatch.jta.UserTransactionImp"/> </property> </bean> -->
+
+<!-- 	<bean id="transactionManager" -->
+<!-- 		class="org.springframework.jdbc.datasource.DataSourceTransactionManager"> -->
+<!-- 		<property name="dataSource" ref="c3p0DataSource1" /> -->
+<!-- 	</bean> -->
+
+	<!-- 如果采用注解方法进行事务管理 -->
+	<tx:annotation-driven/>
+
+	<!-- 声明式事务管理，注意schema是不一样的，其它基本与spring-tx一样 -->
+	<tx:advice id="shardingTxAdvice">
+		<tx:attributes>
+			<tx:method name="*" isolation="DEFAULT" propagation="REQUIRED"
+				rollback-for="java.lang.Exception" read-only="false" />
+		</tx:attributes>
+	</tx:advice>
+
+	<!-- 这里就与一般的声明式事务一样了，把切面指向分片事务管理器即可 -->
+	<aop:config>
+		<aop:pointcut id="txPointcut"
+			expression="execution(public * autonavi.online.framework.test..*Service.*(..))" />
+		<aop:advisor pointcut-ref="txPointcut" advice-ref="shardingTxAdvice" />
+	</aop:config>
+
+
+</beans>

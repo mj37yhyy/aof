@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://code.alibabatech.com/schema/dubbo
+        http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+
+	<dubbo:application name="test_client" />
+
+	<dubbo:registry address="multicast://224.4.5.6:1234" />
+	<dubbo:consumer timeout="60000" />
+
+	<dubbo:protocol name="dubbo" port="20889" />
+	
+	<dubbo:reference interface="autonavi.online.framework.test.service.TestService"
+		id="testService" />
+</beans>
