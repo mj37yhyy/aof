@@ -18,6 +18,10 @@ public abstract class ColumnDefaultHandler<T> {
 							&& method.getReturnType() != null
 							&& method.getName().startsWith("get")) {
 						Map<Class<?>, Method> map = new HashMap<Class<?>, Method>();
+						if(method.getName().equals("getInt")){
+							map.put(method.getParameterTypes()[0], method);
+							put("getInteger", map);
+						}
 						if (!containsKey(method.getName())) {
 							map.put(method.getParameterTypes()[0], method);
 							put(method.getName(), map);
