@@ -2,7 +2,9 @@ package autonavi.online.framework.util.classreading;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.JarURLConnection;
 import java.net.URL;
 import java.net.URLDecoder;
@@ -89,10 +91,10 @@ public class ScanUtils {
 									if (name.endsWith(".class")
 											&& !entry.isDirectory()) {
 										// 去掉后面的".class" 获取真正的类名
-										String className = name.substring(
-												packageName.length() + 1,
-												name.length() - 6);
-										ClassMetadata classMetadata = getClassMetadata(packageName + "." + className);
+//										String className = name.substring(
+//												packageName.length() + 1,
+//												name.length() - 6);
+										ClassMetadata classMetadata = getClassMetadata(jar.getInputStream(entry));
 										if (scannerHandle != null) {
 											scannerHandle.handle(classMetadata);
 										}
@@ -153,9 +155,9 @@ public class ScanUtils {
 						scannerHandle);
 			} else {
 				// 如果是java类文件 去掉后面的.class 只留下类名
-				String className = file.getName().substring(0,
-						file.getName().length() - 6);
-				ClassMetadata classMetadata = getClassMetadata(packageName + "." + className);
+//				String className = file.getName().substring(0,
+//						file.getName().length() - 6);
+				ClassMetadata classMetadata = getClassMetadata(new FileInputStream(file));
 				if (scannerHandle != null) {
 					scannerHandle.handle(classMetadata);
 				}
@@ -172,12 +174,34 @@ public class ScanUtils {
 	 * @return
 	 * @throws Exception
 	 */
+	@SuppressWarnings("unused")
+	@Deprecated
 	private static ClassMetadata getClassMetadata(String className)
 			throws Exception {
 		ClassReader cr = new ClassReader(className);// ClassReader只是按顺序遍历一遍class文件内容，基本不做信息的缓存
 		ClassMetadataVisitor cn = new ClassMetadataVisitor(Opcodes.ASM4);
 		cr.accept(cn, ClassReader.SKIP_DEBUG);
 		return cn;
+	}
+	/**
+	 * 返回类的元数据信息
+	 * 
+	 * @param className
+	 * @return
+	 * @throws Exception
+	 */
+	private static ClassMetadata getClassMetadata(InputStream inputStream)
+			throws Exception {
+		try {
+			ClassReader cr = new ClassReader(inputStream);// ClassReader只是按顺序遍历一遍class文件内容，基本不做信息的缓存
+			ClassMetadataVisitor cn = new ClassMetadataVisitor(Opcodes.ASM4);
+			cr.accept(cn, ClassReader.SKIP_DEBUG);
+			return cn;
+		} finally {
+			if(inputStream!=null){
+				inputStream.close();
+			}
+		}
 	}
 
 }

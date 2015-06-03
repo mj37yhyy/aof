@@ -86,12 +86,13 @@ public class DaoSupportFactory {
 		/**
 		 * 主键生成器
 		 */
-		/*if (ccBaseEntity.getGenerateUniqueHandler() != null
-				&& !ccBaseEntity.getGenerateUniqueHandler().isEmpty())
-			UniqueIDHolder.setIdWorker((IdWorker) this.getClass()
-					.getClassLoader()
-					.loadClass(ccBaseEntity.getGenerateUniqueHandler())
-					.newInstance());*/
+		/*
+		 * if (ccBaseEntity.getGenerateUniqueHandler() != null &&
+		 * !ccBaseEntity.getGenerateUniqueHandler().isEmpty())
+		 * UniqueIDHolder.setIdWorker((IdWorker) this.getClass()
+		 * .getClassLoader() .loadClass(ccBaseEntity.getGenerateUniqueHandler())
+		 * .newInstance());
+		 */
 
 		AbstractDataSourceRoute dataSourceRoute = new DefaultDataSourceRoute();// 数据源路由
 		if (userDataSourceRoute != null)

@@ -49,8 +49,10 @@ public class ConfigShardAndDS {
 		try {
 			CcBaseEntity entity = initBaseConfig.getBeseConfig();
 			Map<String, List<ColumnAttribute>> m = new HashMap<String, List<ColumnAttribute>>();
-			for (String key : entity.getIndexTableMap().keySet()) {
-				m.put(key.toUpperCase(), entity.getIndexTableMap().get(key));
+			if(entity.getIndexTableMap()!=null){
+				for (String key : entity.getIndexTableMap().keySet()) {
+					m.put(key.toUpperCase(), entity.getIndexTableMap().get(key));
+				}
 			}
 			entity.setIndexTableMap(m);
 			ccBaseEntity = entity;
