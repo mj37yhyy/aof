@@ -882,51 +882,66 @@ public class SqlHelper {
 		return new MapListHandler(new BasicRowProcessorPatch());
 	}
 
+	/**
+	 * 获取索引字段的值
+	 * @param indexName
+	 * @param indexColumn
+	 * @param parameterMap
+	 * @param index
+	 * @param isSegament
+	 * @return
+	 * @throws Exception
+	 */
 	private Object[] getColumnValues(String indexName, String[] indexColumn,
 			Map<String, Object> parameterMap, long index, boolean isSegament)
 			throws Exception {
-		if (parameterMap == null || parameterMap.size() == 0) {
-			throw new RuntimeException("需要在方法中提供入参注解 入参注解@SqlParameter未提供");
-		}
-		Object[] indexColumnValue = new Object[indexColumn.length];
-		List<ColumnAttribute> l = getIndexTable(indexName);
-		for (int i = 0; i < indexColumn.length; i++) {
-			if (indexColumn[i].indexOf(ReservedWord.index) != -1) {
-				String[] eArray = indexColumn[i].split("\\.");
-				if (parameterMap.get(eArray[0]) == null) {
-					throw new RuntimeException(
-							"操作使用了批量操作，但是找不到分区字段对应的值，如果是单一数据源，且数据不分表，请不要在批量注解中使用 ReservedWord.index，只在SQL中使用即可");
-				} else if (!List.class.isAssignableFrom(parameterMap.get(
-						eArray[0]).getClass())
-						&& !parameterMap.get(eArray[0]).getClass().isArray()) {
-					throw new RuntimeException(
-							"操作使用了批量操作，对应的["
-									+ eArray[0]
-									+ "]必须为LIST或者数组 如果是单一数据源，且数据不分表，请不要在批量注解中使用 ReservedWord.index，只在SQL中使用即可");
+		Object[] indexColumnValue = null;
+		if (indexColumn != null) {
+			if (parameterMap == null || parameterMap.size() == 0) {
+				throw new RuntimeException("需要在方法中提供入参注解 入参注解@SqlParameter未提供");
+			}
+			indexColumnValue = new Object[indexColumn.length];
+			List<ColumnAttribute> l = getIndexTable(indexName);
+			for (int i = 0; i < indexColumn.length; i++) {
+				if (indexColumn[i].indexOf(ReservedWord.index) != -1) {
+					String[] eArray = indexColumn[i].split("\\.");
+					if (parameterMap.get(eArray[0]) == null) {
+						throw new RuntimeException(
+								"操作使用了批量操作，但是找不到分区字段对应的值，如果是单一数据源，且数据不分表，请不要在批量注解中使用 ReservedWord.index，只在SQL中使用即可");
+					} else if (!List.class.isAssignableFrom(parameterMap.get(
+							eArray[0]).getClass())
+							&& !parameterMap.get(eArray[0]).getClass()
+									.isArray()) {
+						throw new RuntimeException(
+								"操作使用了批量操作，对应的["
+										+ eArray[0]
+										+ "]必须为LIST或者数组 如果是单一数据源，且数据不分表，请不要在批量注解中使用 ReservedWord.index，只在SQL中使用即可");
+					}
 				}
-			}
-			Object value = PropertyUtils.getValue(
-					parameterMap,
-					indexColumn[i].replace(ReservedWord.index, "[" + index
-							+ "]"));
-			if (value == null && isSegament) {
-				throw new RuntimeException("分区参数"
-						+ indexColumn[i].replace(ReservedWord.index, "["
-								+ index + "]") + "没有在入参中找到");
-			}
-			indexColumnValue[i] = value;
-			if ((l == null || l.size() == 0 || l.size() != indexColumn.length)
-					&& indexColumnValue[i] != null && isSegament) {
-				// 如果索引表 找不到 且需要分区或者分表的时候
-				if (l == null)
-					throw new RuntimeException("索引表名称【" + indexName + "】没有找到");
-				else
-					throw new RuntimeException("索引表名称【" + indexName + "】分区字段数【"
-							+ l.size() + "】与入参字段数【" + indexColumn.length
-							+ "】不相等");
-			} else if ((l != null && l.size() > 0 && l.size() == indexColumn.length)
-					&& indexColumnValue[i] != null && isSegament) {
-				checkIndexValue(l.get(i), indexColumnValue[i], i);
+				Object value = PropertyUtils.getValue(
+						parameterMap,
+						indexColumn[i].replace(ReservedWord.index, "[" + index
+								+ "]"));
+				if (value == null && isSegament) {
+					throw new RuntimeException("分区参数"
+							+ indexColumn[i].replace(ReservedWord.index, "["
+									+ index + "]") + "没有在入参中找到");
+				}
+				indexColumnValue[i] = value;
+				if ((l == null || l.size() == 0 || l.size() != indexColumn.length)
+						&& indexColumnValue[i] != null && isSegament) {
+					// 如果索引表 找不到 且需要分区或者分表的时候
+					if (l == null)
+						throw new RuntimeException("索引表名称【" + indexName
+								+ "】没有找到");
+					else
+						throw new RuntimeException("索引表名称【" + indexName
+								+ "】分区字段数【" + l.size() + "】与入参字段数【"
+								+ indexColumn.length + "】不相等");
+				} else if ((l != null && l.size() > 0 && l.size() == indexColumn.length)
+						&& indexColumnValue[i] != null && isSegament) {
+					checkIndexValue(l.get(i), indexColumnValue[i], i);
+				}
 			}
 		}
 		return indexColumnValue;
