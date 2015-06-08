@@ -59,12 +59,24 @@ public class JsonBinder {
 	public static JsonBinder buildNormalBinder() {
 		return new JsonBinder(JsonInclude.Include.ALWAYS);
 	}
+	/**
+	 * 创建输出全部属性到Json字符串的Binder.
+	 */
+	public static JsonBinder buildNormalBinder(boolean isTyping) {
+		return new JsonBinder(JsonInclude.Include.ALWAYS,isTyping);
+	}
 
 	/**
 	 * 创建只输出非空属性到Json字符串的Binder.
 	 */
 	public static JsonBinder buildNonNullBinder() {
 		return new JsonBinder(JsonInclude.Include.NON_NULL);
+	}
+	/**
+	 * 创建只输出非空属性到Json字符串的Binder.
+	 */
+	public static JsonBinder buildNonNullBinder(boolean isTyping) {
+		return new JsonBinder(JsonInclude.Include.NON_NULL,isTyping);
 	}
 
 	/**
