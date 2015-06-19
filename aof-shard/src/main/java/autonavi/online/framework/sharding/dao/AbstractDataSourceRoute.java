@@ -66,7 +66,8 @@ public abstract class AbstractDataSourceRoute {
 			swlogger.stop();
 			swlogger.writeLog();
 		} catch (Exception e) {
-			if(log.isErrorEnabled())log.error(e.getMessage(), e);
+			if (log.isErrorEnabled())
+				log.error(e.getMessage(), e);
 			throw e;
 		}
 		return routeResult;
@@ -128,9 +129,24 @@ public abstract class AbstractDataSourceRoute {
 			Object[] indexColumn, Object[] indexColumnValue,
 			int singleDataSourceKey, ShardingHandle handle, String sql)
 			throws Exception {
-		return shardingIndex.getShardingIndexEntity(indexName, indexColumn,
-				indexColumnValue, singleDataSourceKey, handle, sql,
-				this.getConnection(shardingIndex.getIndex(), false));
+		ShardingIndexEntity entity = shardingIndex
+				.getShardingIndexEntityFromCache(indexName, indexColumnValue);
+		if (entity == null) {
+			Connection conn=null;
+			try {
+				conn=this.getConnection(shardingIndex.getIndex(), false);
+				entity = shardingIndex.getShardingIndexEntityFromDb(indexName,
+						indexColumn, indexColumnValue, singleDataSourceKey, handle,
+						sql, conn);
+			} finally{
+				if (conn != null && !conn.isClosed()) {
+					conn.close();
+					conn = null;
+				}
+			}
+			
+		}
+		return entity;
 
 	}
 

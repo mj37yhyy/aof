@@ -115,23 +115,20 @@ public class ShardingIndex {
 	}
 
 	/**
-	 * 通过索引键获取数据所在的数据源的Key供切换
+	 * 直接读取缓存获取
 	 * 
 	 * @param tableName
-	 *            表名
+	 * @param indexColumn
 	 * @param indexColumnValue
-	 *            索引列的值
 	 * @param singleDataSourceKey
-	 *            指定数据源时便不再计算数据源
-	 * @param columns
-	 *            索引键
-	 * @return 数据源的Key
+	 * @param handle
+	 * @param sql
+	 * @param conn
+	 * @return
 	 * @throws Exception
 	 */
-	public ShardingIndexEntity getShardingIndexEntity(String tableName,
-			Object[] indexColumn, Object[] indexColumnValue,
-			int singleDataSourceKey, ShardingHandle handle, String sql,
-			Connection conn) throws Exception {
+	public ShardingIndexEntity getShardingIndexEntityFromCache(String tableName,
+			Object[] indexColumnValue) throws Exception {
 		StopWatchLogger swlogger = new StopWatchLogger(this.getClass());// 打印耗时日志
 		swlogger.start("getShardingIndexEntity");
 		ShardingIndexEntity shardingIndexEntity = null;
@@ -158,41 +155,87 @@ public class ShardingIndex {
 		if (this.shardingIndexCacheUtils != null)
 			shardingIndexEntity = (ShardingIndexEntity) this.shardingIndexCacheUtils
 					.get(cacheKey);
-		if (shardingIndexEntity == null) {
-			// 未发现分片信息
-			// Connection conn = this.getConnection();// 得到Spring管理的连接
-			try {
-				// 查询当前表的字段，看是否与用户传入的字段匹配
-				shardingIndexEntity = this.selectFromOldTable(conn, tableName,
-						indexColumnValue, this.getIndexTable(tableName),
-						cacheKey, singleDataSourceKey);
-				if (shardingIndexEntity == null) {// 如果不存在，插入一条
-					shardingIndexEntity = this.insertIntoNewTable(conn,
-							tableName, indexColumnValue,
-							this.getIndexTable(tableName), cacheKey,
-							singleDataSourceKey, handle, indexColumn, sql);
-				}
-			} catch (Exception e) {// 如果发生异常，尝试从缓存中取得
-				e.printStackTrace();
-				if (log.isErrorEnabled())
-					log.error(e.getMessage(), e);
-				if (this.shardingIndexCacheUtils != null)
-					shardingIndexEntity = (ShardingIndexEntity) this.shardingIndexCacheUtils
-							.get(cacheKey);
-			} finally {
-				if (conn != null && !conn.isClosed()) {
-					conn.close();
-					conn = null;
-				}
+		return shardingIndexEntity;
+	}
+
+	/**
+	 * 通过索引键获取数据所在的数据源的Key供切换
+	 * 
+	 * @param tableName
+	 *            表名
+	 * @param indexColumnValue
+	 *            索引列的值
+	 * @param singleDataSourceKey
+	 *            指定数据源时便不再计算数据源
+	 * @param columns
+	 *            索引键
+	 * @return 数据源的Key
+	 * @throws Exception
+	 */
+	public ShardingIndexEntity getShardingIndexEntityFromDb(String tableName,
+			Object[] indexColumn, Object[] indexColumnValue,
+			int singleDataSourceKey, ShardingHandle handle, String sql,
+			Connection conn) throws Exception {
+		ShardingIndexEntity shardingIndexEntity = null;
+		try {
+			StopWatchLogger swlogger = new StopWatchLogger(this.getClass());// 打印耗时日志
+			swlogger.start("getShardingIndexEntity");
+
+			List<ColumnAttribute> columnAttributeList = this
+					.getIndexTable(tableName);// 列信息
+			if (null == columnAttributeList) {
+				throw new RuntimeException("索引表【" + tableName + "】不存在");
 			}
-		}
-		swlogger.stop();
-		swlogger.writeLog();
-		if (shardingIndexEntity.getShard_id() != singleDataSourceKey
-				&& singleDataSourceKey > 0) {
-			throw new RuntimeException("指定的单一数据源和索引记录的数据源ID不相符");
+			if (columnAttributeList.size() != indexColumnValue.length) {
+				throw new RuntimeException("索引表【" + tableName
+						+ "】所配置的列数与实际参数不符，请检查");
+			}
+			// 从缓存中取分片信息
+			String cacheKey = tableName;
+			for (int i = 0; i < columnAttributeList.size(); i++) {
+				Object _icv = indexColumnValue[i];
+				if (_icv == null) {
+					throw new RuntimeException("入参中分片字段的值为空,请检查");
+				}
+				ColumnAttribute columnAttribute = columnAttributeList.get(i);
+				cacheKey += "_" + columnAttribute.getColumnName() + "_"
+						+ _icv.toString();
+			}
+
+			// 查询当前表的字段，看是否与用户传入的字段匹配
+			shardingIndexEntity = this.selectFromOldTable(conn, tableName,
+					indexColumnValue, this.getIndexTable(tableName), cacheKey,
+					singleDataSourceKey);
+			if (shardingIndexEntity == null) {// 如果不存在，插入一条
+				shardingIndexEntity = this
+						.insertIntoNewTable(conn, tableName, indexColumnValue,
+								this.getIndexTable(tableName), cacheKey,
+								singleDataSourceKey, handle, indexColumn, sql);
+			}
+			swlogger.stop();
+			swlogger.writeLog();
+			if (shardingIndexEntity.getShard_id() != singleDataSourceKey
+					&& singleDataSourceKey > 0) {
+				throw new RuntimeException("指定的单一数据源和索引记录的数据源ID不相符");
+			}
+
+		} catch (Exception e) {// 如果发生异常，尝试从缓存中取得
+			e.printStackTrace();
+			if (log.isErrorEnabled())
+				log.error(e.getMessage(), e);
+			// if (this.shardingIndexCacheUtils != null)
+			// shardingIndexEntity = (ShardingIndexEntity)
+			// this.shardingIndexCacheUtils
+			// .get(cacheKey);
+		} finally {
+			//转移到调用层去做
+//			if (conn != null && !conn.isClosed()) {
+//				conn.close();
+//				conn = null;
+//			}
 		}
 		return shardingIndexEntity;
+
 	}
 
 	/**
