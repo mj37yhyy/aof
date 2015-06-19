@@ -144,7 +144,6 @@ public abstract class AbstractDataSourceRoute {
 					conn = null;
 				}
 			}
-			
 		}
 		return entity;
 
