@@ -37,18 +37,26 @@ public class CreateIndexTables {
 	 * @throws Exception
 	 */
 	public void init() throws Exception {
-		Connection conn = this.dataSource.getConnection();// 得到Spring管理的连接
-		DatabaseMetaData meta = conn.getMetaData();// 得到原数据
+		Connection conn=null;
+		try {
+			conn = this.dataSource.getConnection();// 得到Spring管理的连接
+			DatabaseMetaData meta = conn.getMetaData();// 得到原数据
 
-		/**
-		 * 创建用户索引表
-		 */
-		initUserIndexTable(conn, meta);
-		/**
-		 * 创建分表配置表，该表用于存放想要在单个数据源中分成多个表的情况。该表主要有两列，一是各索引表的外键ID，二是表名。
-		 * 框架会分析SQL确定是否存在要分表的表名，然后再查询该表，如果当前分不存在这样的记录，则生成一条，并替换SQL中的表名
-		 */
-		initSegmentTableConfigTable(conn, meta);
+			/**
+			 * 创建用户索引表
+			 */
+			initUserIndexTable(conn, meta);
+			/**
+			 * 创建分表配置表，该表用于存放想要在单个数据源中分成多个表的情况。该表主要有两列，一是各索引表的外键ID，二是表名。
+			 * 框架会分析SQL确定是否存在要分表的表名，然后再查询该表，如果当前分不存在这样的记录，则生成一条，并替换SQL中的表名
+			 */
+			initSegmentTableConfigTable(conn, meta);
+		} finally {
+			if (conn != null && !conn.isClosed()) {
+				conn.close();
+				conn = null;
+			}
+		}
 	}
 
 	/**
