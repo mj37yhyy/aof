@@ -17,7 +17,7 @@ public class ConfigMyidFile {
 		InputStream is = getClass().getResourceAsStream("/myid");
 		if (is != null) {
 			try {
-				myid = Integer.valueOf(IOUtils.toString(is));
+				myid = Integer.valueOf(IOUtils.toString(is).trim());
 			} catch (IOException e) {
 				log.error("读取myid文件错误，启动失败");
 				System.exit(0);
