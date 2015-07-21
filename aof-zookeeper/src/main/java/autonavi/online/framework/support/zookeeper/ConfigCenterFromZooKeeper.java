@@ -324,12 +324,12 @@ public class ConfigCenterFromZooKeeper implements InitBaseConfig {
 
 		Map<String, List<ColumnAttribute>> indexTableMap = new HashMap<String, List<ColumnAttribute>>();
 		for (String tableName : children) {
-			ColumnAttribute columnAttribute = null;
-			columnAttribute = new ColumnAttribute();
 			List<String> children1 = zk.getChildren(path + "/" + tableName,
 					false, null);
 			List<ColumnAttribute> columnAttributeList = new ArrayList<ColumnAttribute>();
 			for (String _columnName : children1) {
+				ColumnAttribute columnAttribute = null;
+				columnAttribute = new ColumnAttribute();
 				columnAttribute.setColumnName(_columnName);
 				List<String> children2 = zk.getChildren(path + "/" + tableName
 						+ "/" + _columnName, false, null);
