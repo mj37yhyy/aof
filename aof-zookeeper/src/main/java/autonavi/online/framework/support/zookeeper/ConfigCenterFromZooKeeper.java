@@ -2,9 +2,11 @@ package autonavi.online.framework.support.zookeeper;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -327,10 +329,14 @@ public class ConfigCenterFromZooKeeper implements InitBaseConfig {
 			List<String> children1 = zk.getChildren(path + "/" + tableName,
 					false, null);
 			List<ColumnAttribute> columnAttributeList = new ArrayList<ColumnAttribute>();
+			Integer maxIdx=children1.size();
+			Set<Integer> idxSet=new HashSet<Integer>();
+			ColumnAttribute[] columnAttributes=new ColumnAttribute[children1.size()];
 			for (String _columnName : children1) {
 				ColumnAttribute columnAttribute = null;
 				columnAttribute = new ColumnAttribute();
 				columnAttribute.setColumnName(_columnName);
+				Integer idx=0;
 				List<String> children2 = zk.getChildren(path + "/" + tableName
 						+ "/" + _columnName, false, null);
 				for (String _attr : children2) {
@@ -346,11 +352,26 @@ public class ConfigCenterFromZooKeeper implements InitBaseConfig {
 									.setLength(Integer.valueOf(dataStrs));
 						}else if(_attr.equals(SysProps.AOF_INDEX_NAME.replaceAll("/","" ))){
 							columnAttribute.setName(dataStrs);
+						}else if(_attr.equals(SysProps.AOF_INDEX_IDX.replaceAll("/", ""))){
+							idx=Integer.valueOf(dataStrs);
+							if(idx>maxIdx){
+								log.error("索引序列最大为"+maxIdx+" ZK中存储的为"+idx+",超过最大值,系统将退出");
+								System.exit(0);
+							}
+							if(idxSet.contains(idx)){
+								log.error("ZK中存储的为"+idx+",重复,系统将退出");
+								System.exit(0);
+							}
+							idxSet.add(idx);
 						}
 					}
 				}
-				columnAttributeList.add(columnAttribute);
+				columnAttributes[idx-1]=columnAttribute;
 			}
+			for(int i=0;i<columnAttributes.length;i++){
+				columnAttributeList.add(columnAttributes[i]);
+			}
+			idxSet.clear();
 
 			indexTableMap.put(tableName, columnAttributeList);
 		}

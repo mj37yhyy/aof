@@ -801,7 +801,7 @@ function bindEvent(obj){
 		  p=$('<tr><td width="20%" style="line-height:35px"><input type="text" class="form-control dssPropsAddKey"></td><td width="75%"><input type="text" class="form-control dssPropsAddValue"></td><td width="5%"  style="text-align:right"><span class="glyphicon glyphicon-minus"></span></td></tr>');
 		  $(this).parent().siblings("table.dssProps").prepend(p);
 		}else if($(this).attr("class").indexOf("indexTable")!=-1){
-		  p=$('<tr><td><input type="text" name="name" class="form-control"></td><td><input type="text" name="columnType" class="form-control"></td><td><input type="text" name="columnName" class="form-control"></td><td><input type="text" name="length" class="form-control"></td><td><span class="glyphicon glyphicon-minus"></span></td></tr>');
+		  p=$('<tr><td><input type="text" name="name" class="form-control"></td><td><input type="text" name="columnName" class="form-control"></td><td><input type="text" name="columnType" class="form-control"></td><td><input type="text" name="length" class="form-control"></td><td><span class="glyphicon glyphicon-minus"></span></td></tr>');
 		  $(this).parent().siblings("table.indexProps").append(p);
 		}else if($(this).attr("class").indexOf("bizTable")!=-1){
 		  p=$('<tr><td width="20%" style="line-height:35px"><div class="input-group"><span class="input-group-addon">属性</span><input type="text" class="form-control bizPropsAddKey"></div></td>'

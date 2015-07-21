@@ -34,6 +34,7 @@ public class SysProps {
 	public final static String AOF_INDEX_LENGTH="/length";
 	public final static String AOF_INDEX_TYPE="/type";
 	public final static String AOF_INDEX_NAME="/name";
+	public final static String AOF_INDEX_IDX="/idx";
 	
 	public final static String NODE_VALUE="value";
 	

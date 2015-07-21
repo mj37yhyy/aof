@@ -581,6 +581,7 @@ public class ZookeeperServiceImplNew implements ZookeeperService {
 					(seg.getCount() + "").getBytes(SysProps.CHARSET));
 		}
 		// 索引表处理
+		int idx=1;
 		for (String key : ccBaseEntity.getIndexTableMap().keySet()) {
 			ZooKeeperUtils.createSafeZKNode(root + SysProps.AOF_APP_SHARD
 					+ SysProps.AOF_APP_INDEX + SysProps.AOF_APP_TABLES + "/"
@@ -605,6 +606,13 @@ public class ZookeeperServiceImplNew implements ZookeeperService {
 						+ "/" + key + "/" + column.getColumnName()
 						+ SysProps.AOF_INDEX_NAME,
 						column.getName().getBytes(SysProps.CHARSET));
+				//增加序列
+				ZooKeeperUtils.createSafeZKNode(root + SysProps.AOF_APP_SHARD
+						+ SysProps.AOF_APP_INDEX + SysProps.AOF_APP_TABLES
+						+ "/" + key + "/" + column.getColumnName()
+						+ SysProps.AOF_INDEX_IDX,
+						String.valueOf(idx).getBytes(SysProps.CHARSET));
+				idx++;
 			}
 		}
 	}
