@@ -129,16 +129,19 @@ public abstract class AbstractDataSourceRoute {
 			Object[] indexColumn, Object[] indexColumnValue,
 			int singleDataSourceKey, ShardingHandle handle, String sql)
 			throws Exception {
+		// 运行处理索引字段值算法，支持对索引字段值的分组
+		Object[] _indexColumnValue = handle
+				.handleIndexColumnValue(indexColumnValue);
 		ShardingIndexEntity entity = shardingIndex
-				.getShardingIndexEntityFromCache(indexName, indexColumnValue);
+				.getShardingIndexEntityFromCache(indexName, _indexColumnValue);
 		if (entity == null) {
-			Connection conn=null;
+			Connection conn = null;
 			try {
-				conn=this.getConnection(shardingIndex.getIndex(), false);
+				conn = this.getConnection(shardingIndex.getIndex(), false);
 				entity = shardingIndex.getShardingIndexEntityFromDb(indexName,
-						indexColumn, indexColumnValue, singleDataSourceKey, handle,
-						sql, conn);
-			} finally{
+						indexColumn, _indexColumnValue, singleDataSourceKey,
+						handle, sql, conn);
+			} finally {
 				if (conn != null && !conn.isClosed()) {
 					conn.close();
 					conn = null;
