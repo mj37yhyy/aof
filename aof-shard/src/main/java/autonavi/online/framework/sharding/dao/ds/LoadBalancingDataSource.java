@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
+import java.util.concurrent.Executor;
 import java.util.logging.Logger;
 
 import javax.sql.DataSource;
@@ -387,6 +388,12 @@ public class LoadBalancingDataSource implements DataSource {
 					username, password));// 返回封装类，用了计数器
 		}
 
+//		@Override
+		public Logger getParentLogger() throws SQLFeatureNotSupportedException {
+			// TODO Auto-generated method stub
+			return this.dataSource.getParentLogger();
+		}
+
 	}
 
 	/**
@@ -674,6 +681,37 @@ public class LoadBalancingDataSource implements DataSource {
 		public Struct createStruct(String typeName, Object[] attributes)
 				throws SQLException {
 			return this.conn.createStruct(typeName, attributes);
+		}
+
+//		@Override
+		public void setSchema(String schema) throws SQLException {
+			// TODO Auto-generated method stub
+			this.conn.setSchema(schema);
+		}
+
+//		@Override
+		public String getSchema() throws SQLException {
+			// TODO Auto-generated method stub
+			return this.conn.getSchema();
+		}
+
+//		@Override
+		public void abort(Executor executor) throws SQLException {
+			// TODO Auto-generated method stub
+			this.conn.abort(executor);
+		}
+
+//		@Override
+		public void setNetworkTimeout(Executor executor, int milliseconds)
+				throws SQLException {
+			// TODO Auto-generated method stub
+			this.conn.setNetworkTimeout(executor, milliseconds);
+		}
+
+//		@Override
+		public int getNetworkTimeout() throws SQLException {
+			// TODO Auto-generated method stub
+			return 0;
 		}
 
 	}

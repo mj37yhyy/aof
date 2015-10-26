@@ -68,8 +68,7 @@ public class CcBizConfig implements BeanDefinitionRegistryPostProcessor {
 			log.info("开始获取框架的自定义配置属性");
 			// 处理已有属性
 			ManagedProperties managedProperties = new ManagedProperties();
-			String[] name = beanFactory
-					.getBeanNamesForType(PropertiesLoaderSupport.class);
+			String[] name = beanFactory.getBeanNamesForType(PropertiesLoaderSupport.class,true,false);
 			for (String _name : name) {
 				Object obj = beanFactory.getBean(_name);
 				Method mergeProperties = PropertiesLoaderSupport.class
