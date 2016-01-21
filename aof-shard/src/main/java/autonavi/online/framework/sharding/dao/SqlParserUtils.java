@@ -99,10 +99,10 @@ public class SqlParserUtils {
 		SqlParserUtils spu = new SqlParserUtils();
 		long st = System.currentTimeMillis();
 		String sql = "SELECT * FROM MYTABLE,demo WHERE COLUMN_A = ? AND COLUMN_B <> ? and a=2 and b=3 or c=4 and id in (select id from demo1) order by d";
-//		for (String name : spu.getTablesNames(sql)) {
-//			System.out.println(name);
-//		}
-		System.out.println(spu.setTableAndJoins(sql, "demo", "demo_123"));
+		for (String name : spu.getTablesNames(sql)) {
+			System.out.println(name);
+		}
+//		System.out.println(spu.setTableAndJoins(sql, "demo", "demo_123"));
 		System.out.println("所用时间："+(System.currentTimeMillis()-st)+"ms");
 //
 //		sql = "update a1234fd set b=1,c=2 where id=121";

@@ -288,6 +288,7 @@
 						<phase>compile</phase>
 						<configuration>
 							<tasks>
+								<touch file="src/main/resources/META-INF/version.txt" mkdirs="true"></touch>
 								<replaceregexp file="src/main/resources/META-INF/version.txt"
 									match=".*" replace="${project.version}" byline="true" />
 							</tasks>
