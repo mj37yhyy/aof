@@ -170,7 +170,7 @@ public class PropsConfigCenterBeanDefinitionParser extends
 								log.warn("没有读取到BIZ配置的JSON文件或者配置文件为空,请检查,将采用默认配置启动");
 								return new HashMap<String, String>();
 							}
-							reader = new InputStreamReader(input);
+							reader = new InputStreamReader(input, "utf-8");
 							buffer = new BufferedReader(reader);
 							StringBuffer sb = new StringBuffer();
 							String line = null;
